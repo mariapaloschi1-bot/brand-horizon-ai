@@ -52,6 +52,19 @@ const THEME_COLORS = {
 
 const MARKETS = ['Italia', 'Germania', 'Spagna', 'UK', 'Francia', 'USA', 'Polonia'];
 
+const GSC_QUERIES = [
+    { term: "cafenoir", type: "Brand", impressions: 150000, clicks: 45000 },
+    { term: "sandali cafenoir", type: "Brand", impressions: 80000, clicks: 12000 },
+    { term: "scarpe cafenoir", type: "Brand", impressions: 60000, clicks: 8000 },
+    { term: "cafenoir outlet", type: "Brand", impressions: 40000, clicks: 9000 },
+    { term: "stivali cafenoir", type: "Brand", impressions: 35000, clicks: 6000 },
+    { term: "sandali gioiello", type: "Generic", impressions: 90000, clicks: 2500 },
+    { term: "scarpe donna eleganti", type: "Generic", impressions: 75000, clicks: 1200 },
+    { term: "anfibi donna", type: "Generic", impressions: 60000, clicks: 1800 },
+    { term: "sneakers zeppa", type: "Generic", impressions: 45000, clicks: 900 },
+    { term: "borse a spalla", type: "Generic", impressions: 30000, clicks: 600 }
+];
+
 // Dati Cluster Brand (Simulazione CafèNoir)
 const CLUSTER_DATA_UPDATED = [
   { name: 'Sandali Gioiello', google: 28500, tiktok: 5000, amazon: 4000, yoy: 45 },
@@ -97,22 +110,6 @@ const YOY_COMPARISON_DATA = [
     { cluster: 'Ballerine', gen25: 310, gen26: 90, delta: -71.0 },
     { cluster: 'Zeppe', gen25: 170, gen26: 90, delta: -47.1 },
     { cluster: 'Occhiali da Vista', gen25: 300, gen26: 70, delta: -76.7 }
-];
-
-// Dati GSC Parsati dal CSV (Top Queries) - Per Tab 5
-const GSC_QUERIES = [
-  { term: 'cafe noir', clicks: 34682, impressions: 207414, ctr: 16.72, pos: 1.83, type: 'Brand', cluster: 'Brand Generico' },
-  { term: 'stivali donna', clicks: 7179, impressions: 537718, ctr: 1.34, pos: 6.88, type: 'Generic', cluster: 'Stivali' },
-  { term: 'scarpe donna', clicks: 4986, impressions: 406895, ctr: 1.23, pos: 5.91, type: 'Generic', cluster: 'Scarpe Generico' },
-  { term: 'sandali donna', clicks: 3560, impressions: 275783, ctr: 1.29, pos: 6.22, type: 'Generic', cluster: 'Sandali' },
-  { term: 'mocassini donna', clicks: 1962, impressions: 214610, ctr: 0.91, pos: 9.54, type: 'Generic', cluster: 'Mocassini' },
-  { term: 'cafè noir nuovi arrivi', clicks: 2841, impressions: 9540, ctr: 29.78, pos: 1.21, type: 'Brand', cluster: 'Brand Generico' },
-  { term: 'anfibi donna', clicks: 1402, impressions: 194158, ctr: 0.72, pos: 9.44, type: 'Generic', cluster: 'Anfibi' },
-  { term: 'slingback', clicks: 1361, impressions: 214489, ctr: 0.63, pos: 7.04, type: 'Generic', cluster: 'Scarpe Generico' },
-  { term: 'ciabatte donna estive', clicks: 1150, impressions: 107870, ctr: 1.07, pos: 7.37, type: 'Generic', cluster: 'Ciabatte' },
-  { term: 'sneakers donna', clicks: 412, impressions: 361399, ctr: 0.11, pos: 8.63, type: 'Generic', cluster: 'Sneakers' },
-  { term: 'stivali alti donna', clicks: 529, impressions: 96024, ctr: 0.55, pos: 10.52, type: 'Generic', cluster: 'Stivali' },
-  { term: 'cafè noir outlet', clicks: 1284, impressions: 5248, ctr: 24.47, pos: 2.72, type: 'Brand', cluster: 'Brand Generico' }
 ];
 
 // Dati Base Keyword per Stagionalità (Google Baseline)
