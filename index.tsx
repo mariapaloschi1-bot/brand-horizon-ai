@@ -49,7 +49,9 @@ import {
   Layers,
   Cpu,
   MousePointer2,
-  Eye
+  Eye,
+  Menu,
+  X
 } from 'lucide-react';
 
 // --- COSTANTI E DATI ---
@@ -452,7 +454,7 @@ const SeasonalityView = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
        <DemoDataAlert />
-       <div className="flex flex-col md:flex-row justify-between items-end mb-4 gap-4">
+       <div className="flex flex-col md:flex-row justify-between md:items-end mb-4 gap-4">
           <div>
               <h2 className="text-2xl font-bold text-white flex items-center tracking-tight">
                   <Clock className="w-6 h-6 mr-3 text-teal-400" />
@@ -461,7 +463,7 @@ const SeasonalityView = () => {
               <p className="text-slate-400 text-sm mt-1">Confronto volumi YoY (Quest'anno vs Scorso Anno) diviso per piattaforma.</p>
           </div>
           <div className="flex gap-4">
-             <div className="flex items-center gap-4 text-xs">
+             <div className="flex flex-wrap items-center gap-4 text-xs">
                  <div className="flex items-center"><div className="w-3 h-0.5 bg-teal-400 mr-2"></div>Google</div>
                  <div className="flex items-center"><div className="w-3 h-0.5 bg-pink-400 mr-2"></div>TikTok</div>
                  <div className="flex items-center"><div className="w-3 h-0.5 bg-amber-400 mr-2"></div>Amazon</div>
@@ -499,7 +501,7 @@ const SeasonalityView = () => {
                 </div>
                 
                 {/* Snapshot Mensile (Sostituisce Market Velocity) */}
-                <div className="grid grid-cols-3 gap-4 mt-6 border-t border-white/5 pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 border-t border-white/5 pt-4">
                      <div className="bg-slate-900/50 p-4 rounded-lg text-center">
                         <div className="text-[10px] uppercase text-slate-500 font-bold mb-1">Growth Velocity Index</div>
                         <div className="text-2xl font-bold text-emerald-400">+12.5%</div>
@@ -784,6 +786,7 @@ const GSCView = () => {
 const App = () => {
   const [activeTab, setActiveTab] = useState('market');
   const [copied, setCopied] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleCopyLink = () => {
       navigator.clipboard.writeText(window.location.href);
@@ -810,7 +813,10 @@ const App = () => {
 
   const NavItem = ({ id, icon: Icon, label }: NavItemProps) => (
     <button 
-      onClick={() => setActiveTab(id)}
+      onClick={() => {
+        setActiveTab(id);
+        setMobileMenuOpen(false);
+      }}
       className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 mb-1 ${
         activeTab === id 
           ? 'bg-teal-500/10 text-teal-400 border border-teal-500/30 shadow-[0_0_15px_rgba(45,212,191,0.2)]' 
@@ -825,7 +831,42 @@ const App = () => {
   return (
     <div className="min-h-screen flex flex-col text-slate-200 font-sans selection:bg-teal-500/30">
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
+        
+        {/* Mobile Menu Overlay */}
+        {mobileMenuOpen && (
+            <div className="fixed inset-0 z-50 flex md:hidden">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)}></div>
+                <div className="relative w-72 h-full bg-slate-950 border-r border-white/10 p-6 shadow-2xl animate-in slide-in-from-left duration-200">
+                    <button 
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
+                    
+                    <div className="mb-8 mt-2">
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="bg-gradient-to-br from-teal-400 to-emerald-600 p-2 rounded-lg shadow-lg shadow-teal-500/20">
+                                <Hexagon className="w-6 h-6 text-white fill-white/10" strokeWidth={1.5} />
+                            </div>
+                            <div>
+                                <span className="text-lg font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 block leading-none">BRAND<br/><span className="text-teal-400">HORIZON.AI</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav className="space-y-2">
+                        <NavItem id="market" icon={PieChartIcon} label="Brand Market Share" />
+                        <NavItem id="forecast" icon={Clock} label="Seasonality Forecast" />
+                        <NavItem id="hero" icon={Target} label="Hero Product Deep Dive" />
+                        <NavItem id="ainodes" icon={BrainCircuit} label="AI Semantic Expansion" />
+                        <NavItem id="gsc" icon={Search} label="Organic Performance" />
+                    </nav>
+                </div>
+            </div>
+        )}
+
+        {/* Sidebar Desktop */}
         <aside className="w-72 glass-strong hidden md:flex flex-col fixed h-full z-20 border-r border-white/5 bg-slate-950">
             <div className="p-8">
                 <div className="flex items-center gap-3 mb-2">
@@ -867,41 +908,51 @@ const App = () => {
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-cyan-900/10 blur-[150px] pointer-events-none"></div>
 
             <header className="glass-strong sticky top-0 z-10 border-b border-white/5 backdrop-blur-md">
-            <div className="px-8 py-5 flex items-center justify-between">
-                <div>
-                    <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
-                        <span>Dashboard</span>
-                        <ChevronRight className="w-3 h-3" />
-                        <span className="text-teal-400 font-medium">
-                            {activeTab === 'market' ? 'Cluster Analysis' : 
-                            activeTab === 'ainodes' ? 'AI Query Expansion' :
-                            activeTab === 'forecast' ? 'Seasonal Trends' :
-                            activeTab === 'hero' ? 'Product Strategy' :
-                            'Organic Search'}
-                        </span>
+            <div className="px-4 py-4 md:px-8 md:py-5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    {/* Hamburger Button for Mobile */}
+                    <button 
+                        onClick={() => setMobileMenuOpen(true)}
+                        className="md:hidden p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
+                    >
+                        <Menu className="w-6 h-6" />
+                    </button>
+
+                    <div>
+                        <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                            <span className="hidden sm:inline">Dashboard</span>
+                            <ChevronRight className="w-3 h-3 hidden sm:inline" />
+                            <span className="text-teal-400 font-medium">
+                                {activeTab === 'market' ? 'Cluster Analysis' : 
+                                activeTab === 'ainodes' ? 'AI Query Expansion' :
+                                activeTab === 'forecast' ? 'Seasonal Trends' :
+                                activeTab === 'hero' ? 'Product Strategy' :
+                                'Organic Search'}
+                            </span>
+                        </div>
+                        <h1 className="text-lg md:text-xl font-bold text-white capitalize flex items-center tracking-tight truncate max-w-[200px] sm:max-w-none">
+                            {activeTab === 'market' && <PieChartIcon className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
+                            {activeTab === 'ainodes' && <BrainCircuit className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
+                            {activeTab === 'forecast' && <Clock className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
+                            {activeTab === 'hero' && <Target className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
+                            {activeTab === 'gsc' && <Search className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
+                            {activeTab === 'market' ? 'Analisi Cluster Brand' : 
+                            activeTab === 'ainodes' ? 'Query Fan Out' :
+                            activeTab === 'forecast' ? 'Seasonality & Trends' :
+                            activeTab === 'hero' ? 'Hero Product Study' :
+                            'Organic Search Performance'}
+                        </h1>
                     </div>
-                    <h1 className="text-xl font-bold text-white capitalize flex items-center tracking-tight">
-                        {activeTab === 'market' && <PieChartIcon className="w-5 h-5 mr-3 text-teal-400" />}
-                        {activeTab === 'ainodes' && <BrainCircuit className="w-5 h-5 mr-3 text-teal-400" />}
-                        {activeTab === 'forecast' && <Clock className="w-5 h-5 mr-3 text-teal-400" />}
-                        {activeTab === 'hero' && <Target className="w-5 h-5 mr-3 text-teal-400" />}
-                        {activeTab === 'gsc' && <Search className="w-5 h-5 mr-3 text-teal-400" />}
-                        {activeTab === 'market' ? 'Analisi Cluster Brand' : 
-                        activeTab === 'ainodes' ? 'Query Fan Out' :
-                        activeTab === 'forecast' ? 'Seasonality & Trends' :
-                        activeTab === 'hero' ? 'Hero Product Study' :
-                        'Organic Search Performance'}
-                    </h1>
                 </div>
-                <div className="flex items-center space-x-6">
+                <div className="flex items-center space-x-2 md:space-x-6">
                     <button
                         onClick={handleCopyLink}
-                        className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 transition-all text-xs font-bold mr-4"
+                        className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 transition-all text-xs font-bold mr-2 md:mr-4"
                     >
                         {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
-                        <span>{copied ? 'Link Copiato!' : 'Condividi Tool'}</span>
+                        <span className="hidden sm:inline">{copied ? 'Link Copiato!' : 'Condividi Tool'}</span>
                     </button>
-                    <div className="flex items-center space-x-2 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
+                    <div className="hidden sm:flex items-center space-x-2 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
                         <span className="text-[10px] text-emerald-400 font-mono uppercase tracking-widest font-bold">API Connected</span>
                     </div>
@@ -909,11 +960,11 @@ const App = () => {
             </div>
             </header>
             
-            <div className="p-8 max-w-[1600px] mx-auto relative z-0 flex-1 w-full">
+            <div className="p-4 md:p-8 max-w-[1600px] mx-auto relative z-0 flex-1 w-full">
             {renderContent()}
             </div>
 
-            <footer className="border-t border-white/5 bg-slate-950 py-12 px-8 mt-12">
+            <footer className="border-t border-white/5 bg-slate-950 py-8 md:py-12 px-4 md:px-8 mt-12">
                 <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
                     <div className="mb-6">
                         <Hexagon className="w-6 h-6 text-teal-500 mx-auto opacity-50 mb-4" />
