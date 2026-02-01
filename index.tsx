@@ -21,7 +21,6 @@ import {
   Search,
   Share2,
   ArrowRight,
-  Layers,
   Zap,
   Target,
   BrainCircuit,
