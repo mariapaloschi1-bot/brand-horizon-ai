@@ -955,8 +955,7 @@ const AINodesView = () => {
                                     <span className="text-[10px] text-slate-500">Confidence: {branch.confidence}%</span>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        ))}\n                    </div>
                     
                     <InsightBox title="Insight Semantico">
                         Utilizza LLM (GPT-4, Gemini, Claude) per esplorare le associazioni semantiche laterali che gli utenti fanno con il brand.
@@ -969,6 +968,115 @@ const AINodesView = () => {
     </div>
   );
 };
+
+// 6. Brand/Generic Traffic Split View (New Tab)
+const BrandGenericSplitView = () => {
+  // Mock Data derived from context
+  const trafficSplit = [
+      { name: 'Brand', value: 35000, fill: '#2dd4bf' }, // Teal
+      { name: 'Generic', value: 12000, fill: '#f472b6' }, // Pink
+  ];
+  const impressionSplit = [
+      { name: 'Brand', value: 450000, fill: '#2dd4bf' },
+      { name: 'Generic', value: 580000, fill: '#f472b6' },
+  ];
+
+  const sortedYoY = [...YOY_COMPARISON_DATA].sort((a, b) => b.delta - a.delta);
+  const winners = sortedYoY.slice(0, 6);
+  const losers = sortedYoY.slice(-6).reverse();
+
+  return (
+    <div className="space-y-6 animate-in fade-in duration-500">
+        <DemoDataAlert />
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                 <h2 className="text-xl md:text-2xl font-bold text-white flex items-center tracking-tight">
+                    <BarChart3 className="w-6 h-6 mr-3 text-teal-400" />
+                    Traffic & Cluster Split
+                 </h2>
+                 <p className="text-slate-400 text-sm mt-1">Executive summary: Brand vs Generic e performance Cluster.</p>
+            </div>
+            <button className="flex items-center gap-2 bg-teal-600 hover:bg-teal-500 text-white px-6 py-2 rounded-lg transition-all shadow-lg shadow-teal-500/20 w-full md:w-auto justify-center">
+                <LinkIcon className="w-4 h-4" />
+                <span className="text-xs font-bold">Connect Search Console</span>
+            </button>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card title="Traffic & Impressions Split" description="Confronto Brand vs Generic su Clicks e Impressions.">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div className="h-[200px] relative">
+                         <h4 className="text-xs text-center text-slate-400 mb-2 font-bold uppercase">Clicks Split</h4>
+                         <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie data={trafficSplit} innerRadius={40} outerRadius={60} paddingAngle={5} dataKey="value">
+                                    {trafficSplit.map((entry, index) => <Cell key={index} fill={entry.fill} />)}
+                                </Pie>
+                                <Tooltip content={<CustomTooltip />} />
+                                <Legend verticalAlign="bottom" height={36}/>
+                            </PieChart>
+                         </ResponsiveContainer>
+                         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -mt-4 text-center pointer-events-none">
+                            <span className="text-xs text-slate-500">Total</span>
+                            <div className="text-sm font-bold text-white">47K</div>
+                         </div>
+                    </div>
+                    <div className="h-[200px] relative">
+                         <h4 className="text-xs text-center text-slate-400 mb-2 font-bold uppercase">Impressions Split</h4>
+                         <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie data={impressionSplit} innerRadius={40} outerRadius={60} paddingAngle={5} dataKey="value">
+                                    {impressionSplit.map((entry, index) => <Cell key={index} fill={entry.fill} />)}
+                                </Pie>
+                                <Tooltip content={<CustomTooltip />} />
+                                <Legend verticalAlign="bottom" height={36}/>
+                            </PieChart>
+                         </ResponsiveContainer>
+                         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -mt-4 text-center pointer-events-none">
+                            <span className="text-xs text-slate-500">Total</span>
+                            <div className="text-sm font-bold text-white">1M+</div>
+                         </div>
+                    </div>
+                </div>
+                <div className="mt-4 bg-slate-900/40 p-3 rounded-lg border border-white/5 text-xs text-slate-400 text-center">
+                    Il traffico (Click) è dominato dal <span className="text-teal-400 font-bold">Brand</span>, mentre le Impressions sono guidate dal <span className="text-pink-400 font-bold">Generic</span>.
+                </div>
+            </Card>
+
+            <Card title="Cluster Performance (YoY)" description="Cluster in forte crescita vs Cluster in perdita.">
+                <div className="grid grid-cols-2 gap-4 h-[280px]">
+                    <div className="bg-emerald-500/5 rounded-lg p-3 border border-emerald-500/10 flex flex-col">
+                         <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-3 flex items-center">
+                            <TrendingUp className="w-3 h-3 mr-1" /> Best Performers
+                         </div>
+                         <ul className="space-y-2 overflow-y-auto custom-scrollbar pr-1">
+                            {winners.map((item, i) => (
+                                <li key={i} className="flex justify-between items-center text-xs border-b border-emerald-500/10 pb-1 last:border-0">
+                                    <span className="text-slate-300 truncate mr-2">{item.cluster}</span>
+                                    <span className="font-mono font-bold text-emerald-400">+{item.delta}%</span>
+                                </li>
+                            ))}
+                         </ul>
+                    </div>
+                    <div className="bg-red-500/5 rounded-lg p-3 border border-red-500/10 flex flex-col">
+                         <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-3 flex items-center">
+                            <TrendingDown className="w-3 h-3 mr-1" /> Worst Performers
+                         </div>
+                         <ul className="space-y-2 overflow-y-auto custom-scrollbar pr-1">
+                            {losers.map((item, i) => (
+                                <li key={i} className="flex justify-between items-center text-xs border-b border-red-500/10 pb-1 last:border-0">
+                                    <span className="text-slate-300 truncate mr-2">{item.cluster}</span>
+                                    <span className="font-mono font-bold text-red-400">{item.delta}%</span>
+                                </li>
+                            ))}
+                         </ul>
+                    </div>
+                </div>
+            </Card>
+        </div>
+    </div>
+  );
+}
 
 // 5. GSC Deep Dive (Overhauled & Action Oriented with Scatter Plot)
 const GSCView = () => {
@@ -1130,6 +1238,7 @@ const App = () => {
       case 'hero': return <HeroProductView />;
       case 'ainodes': return <AINodesView />;
       case 'gsc': return <GSCView />;
+      case 'split': return <BrandGenericSplitView />;
       default: return <BrandAnalysisView />;
     }
   };
@@ -1185,6 +1294,7 @@ const App = () => {
                     <MobileNavItem id="hero" icon={Target} label="Hero Product Deep Dive" />
                     <MobileNavItem id="ainodes" icon={BrainCircuit} label="AI Semantic Expansion" />
                     <MobileNavItem id="gsc" icon={Search} label="Organic Performance" />
+                    <MobileNavItem id="split" icon={BarChart3} label="Traffic & Cluster Split" />
                 </nav>
             </div>
         )}
@@ -1213,6 +1323,7 @@ const App = () => {
                 <NavItem id="hero" icon={Target} label="Hero Product Deep Dive" />
                 <NavItem id="ainodes" icon={BrainCircuit} label="AI Semantic Expansion" />
                 <NavItem id="gsc" icon={Search} label="Organic Performance" />
+                <NavItem id="split" icon={BarChart3} label="Traffic & Cluster Split" />
             </nav>
 
             {/* PM Section (Bottom) - RESTORED */}
@@ -1249,6 +1360,7 @@ const App = () => {
                                     activeTab === 'ainodes' ? 'AI Query Expansion' :
                                     activeTab === 'forecast' ? 'Seasonal Trends' :
                                     activeTab === 'hero' ? 'Product Strategy' :
+                                    activeTab === 'split' ? 'Traffic Split' :
                                     'Organic Search'}
                                 </span>
                             </div>
@@ -1258,10 +1370,12 @@ const App = () => {
                                 {activeTab === 'forecast' && <Clock className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
                                 {activeTab === 'hero' && <Target className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
                                 {activeTab === 'gsc' && <Search className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
+                                {activeTab === 'split' && <BarChart3 className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
                                 {activeTab === 'market' ? 'Analisi Cluster Brand' : 
                                 activeTab === 'ainodes' ? 'Query Fan Out' :
                                 activeTab === 'forecast' ? 'Seasonality & Trends' :
                                 activeTab === 'hero' ? 'Hero Product Study' :
+                                activeTab === 'split' ? 'Traffic & Cluster Split' :
                                 'Organic Search Performance'}
                             </h1>
                         </div>
