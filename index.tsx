@@ -1134,7 +1134,7 @@ const App = () => {
     }
   };
 
-  const NavItem = ({ id, icon: Icon, label }) => (
+  const NavItem = ({ id, icon: Icon, label }: { id: string; icon: any; label: string }) => (
     <button 
       onClick={() => setActiveTab(id)}
       className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 mb-1 ${
