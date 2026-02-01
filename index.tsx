@@ -61,8 +61,7 @@ import {
   MessageSquare,
   Minus,
   Check,
-  Copy,
-  Menu
+  Copy
 } from 'lucide-react';
 
 // --- Costanti Dati & Configurazioni ---
@@ -188,18 +187,18 @@ interface CardProps {
 }
 
 const Card = ({ title, children, className = "", description = "", action }: CardProps) => (
-  <div className={`glass rounded-xl p-4 md:p-6 transition-all duration-300 border-t border-teal-500/20 ${className}`}>
+  <div className={`glass rounded-xl p-6 transition-all duration-300 border-t border-teal-500/20 ${className}`}>
     {(title || description || action) && (
       <div className="mb-6">
-        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 md:gap-0">
+        <div className="flex items-start justify-between">
           <div>
             {title && <h3 className="text-lg font-bold text-slate-100 tracking-tight">{title}</h3>}
             <div className="h-0.5 w-12 bg-teal-400 rounded-full opacity-80 shadow-[0_0_8px_rgba(45,212,191,0.5)] mt-3 mb-2"></div>
           </div>
-          {action && <div className="self-end md:self-auto">{action}</div>}
+          {action && <div>{action}</div>}
         </div>
         {description && (
-          <div className="bg-slate-900/40 p-3 rounded-lg border border-white/5 mt-2 md:mt-0">
+          <div className="bg-slate-900/40 p-3 rounded-lg border border-white/5">
              <p className="text-xs text-slate-300 font-medium leading-relaxed text-balance">{description}</p>
           </div>
         )}
@@ -254,30 +253,29 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
 
-    // Tooltip per il Pie Chart (Tab 1) con Share% e YoY
+    // Tooltip per il Pie Chart (Tab 1)
     if (data.totalShare !== undefined) {
         return (
-            <div className="glass-strong p-4 rounded-lg shadow-2xl border border-teal-500/20 bg-slate-950/95 z-50 relative pointer-events-none min-w-[200px] animate-in fade-in zoom-in-95 duration-200">
-                <p className="text-teal-50 font-bold mb-3 text-sm border-b border-white/10 pb-2">{data.name}</p>
+            <div className="glass-strong p-4 rounded-lg shadow-2xl border border-teal-500/20 bg-slate-950/95 z-50 relative pointer-events-none">
+                <p className="text-teal-50 font-bold mb-2 text-sm">{data.name}</p>
                 <div className="flex flex-col space-y-2 text-xs">
                     <div className="flex justify-between items-center">
                         <span className="text-slate-400">Volume Canale:</span>
-                        <span className="text-white font-mono font-bold text-sm">
+                        <span className="text-white font-mono font-bold">
                             {payload[0].value.toLocaleString()}
                         </span>
                     </div>
                     {/* Share del cluster su tutte le ricerche brand */}
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center border-t border-white/10 pt-2">
                         <span className="text-slate-400">Share su Totale Brand:</span>
                         <span className="text-teal-400 font-bold font-mono">
                             {data.totalShare}%
                         </span>
                     </div>
                     {/* YoY specifico del cluster */}
-                    <div className="flex justify-between items-center mt-1 pt-2 border-t border-dashed border-white/10">
-                        <span className="text-slate-400">YoY Trend:</span>
-                        <span className={`font-bold font-mono text-sm ${data.specificYoY >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                            {data.specificYoY >= 0 ? <TrendingUp className="inline w-3 h-3 mr-1"/> : <TrendingDown className="inline w-3 h-3 mr-1"/>}
+                    <div className="flex justify-between items-center">
+                        <span className="text-slate-400">YoY Cluster:</span>
+                        <span className={`font-bold font-mono ${data.specificYoY >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                             {data.specificYoY >= 0 ? '+' : ''}{data.specificYoY}%
                         </span>
                     </div>
@@ -460,24 +458,24 @@ const BrandAnalysisView = () => {
       {/* Header Filtri */}
       <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-slate-900/50 p-4 rounded-xl border border-white/5">
          <div className="flex flex-col gap-1 w-full md:w-auto">
-             <div className="glass px-3 py-2 rounded-lg flex items-center w-full md:min-w-[300px]">
+             <div className="glass px-3 py-2 rounded-lg flex items-center min-w-[300px]">
                 <Search className="w-4 h-4 text-teal-500 mr-2" />
                 <input type="text" placeholder="Cerca Brand..." defaultValue="CafèNoir" className="bg-transparent border-none text-white text-sm w-full focus:ring-0 placeholder-slate-500 font-semibold" />
              </div>
              <span className="text-[10px] text-emerald-400 ml-2 font-mono">● Simulazione attiva per il brand CafèNoir</span>
          </div>
          <div className="flex items-center gap-4 w-full md:w-auto">
-            <div className="glass px-3 py-2 rounded-lg flex items-center w-full md:w-auto">
+            <div className="glass px-3 py-2 rounded-lg flex items-center">
                 <MapPin className="w-4 h-4 text-teal-500 mr-2" />
                 <select 
                     value={selectedMarket} 
                     onChange={(e) => setSelectedMarket(e.target.value)}
-                    className="bg-transparent border-none text-white text-sm focus:ring-0 [&>option]:bg-slate-900 cursor-pointer w-full"
+                    className="bg-transparent border-none text-white text-sm focus:ring-0 [&>option]:bg-slate-900 cursor-pointer"
                 >
                     {MARKETS.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
             </div>
-            <button className="glass hover:bg-teal-500/20 text-white px-4 py-2 rounded-lg flex items-center text-sm transition-all border border-teal-500/30 whitespace-nowrap">
+            <button className="glass hover:bg-teal-500/20 text-white px-4 py-2 rounded-lg flex items-center text-sm transition-all border border-teal-500/30">
                 <Download className="w-4 h-4 mr-2" /> Export
             </button>
          </div>
@@ -493,34 +491,34 @@ const BrandAnalysisView = () => {
 
       {/* 3 Donut Charts */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card title="Brand Search Google" description="Visualizza la ripartizione percentuale delle ricerche brandizzate divise per piattaforma.">
+        <Card title="Brand Search Google" description="Visualizza la ripartizione percentuale delle ricerche brandizzate divise per piattaforma. Questo grafico a ciambella evidenzia quale canale detiene la quota maggioritaria di domanda esplicita, permettendo di allocare il budget dove l'utente è più attivo.">
             <DonutChartWithStats dataKey="google" platformName="Google" />
             <AnalysisGuide>
-                Google rimane il canale primario per intenzioni d'acquisto dirette e specifiche. <strong>Suggerimento:</strong> Passa il mouse sulle sezioni per vedere Share% e YoY.
+                Google rimane il canale primario per intenzioni d'acquisto dirette e specifiche. TikTok mostra una crescita nelle categorie accessorie, suggerendo un uso per discovery. Amazon converte la domanda su prodotti commodity a basso prezzo.
             </AnalysisGuide>
         </Card>
-        <Card title="Brand Search TikTok" description="Analizza la viralità e l'interesse su TikTok. Qui i volumi sono spesso legati a trend visivi.">
+        <Card title="Brand Search TikTok" description="Analizza la viralità e l'interesse su TikTok. Qui i volumi sono spesso legati a trend visivi (es. 'Cappelli', 'Anfibi') e non necessariamente al core business storico. Indica potenziale per campagne influencer e awareness.">
             <DonutChartWithStats dataKey="tiktok" platformName="TikTok" />
             <AnalysisGuide>
-                Il pubblico TikTok cerca ispirazione visiva. I volumi elevati su Anfibi indicano che questo prodotto è percepito come 'trend'.
+                Il pubblico TikTok cerca ispirazione visiva. I volumi elevati su Anfibi indicano che questo prodotto è percepito come 'trend' e si presta a contenuti video brevi. Strategia consigliata: User Generated Content.
             </AnalysisGuide>
         </Card>
-        <Card title="Brand Search Amazon" description="Riflette l'intento transazionale puro. Su Amazon dominano categorie 'commodity'.">
+        <Card title="Brand Search Amazon" description="Riflette l'intento transazionale puro. Su Amazon dominano categorie 'commodity' o ad acquisto d'impulso e prezzo competitivo (es. 'Ciabatte', 'Sneakers'). Utile per strategie di pricing, stock e difesa del brand.">
             <DonutChartWithStats dataKey="amazon" platformName="Amazon" />
             <AnalysisGuide>
-                 Dominano i prodotti 'entry level' o funzionali. Utile per strategie di prezzo aggressivo.
+                 Dominano i prodotti 'entry level' o funzionali. Se il volume di ricerca è alto ma la conversione bassa, potrebbe esserci un problema di prezzo rispetto ai competitor mass market. Controllare la Buy Box.
             </AnalysisGuide>
         </Card>
       </div>
 
       {/* Market Resonance - Orizzontale per leggibilità */}
       <Card 
-        title="Market Resonance Comparativa" 
-        description="Confronta i volumi assoluti di ricerca per ogni categoria di prodotto attraverso tutti i canali monitorati."
+        title="Market Resonance Comparativa (Tutti i Cluster)" 
+        description="Confronta i volumi assoluti di ricerca per ogni categoria di prodotto attraverso tutti i canali monitorati. La visualizzazione orizzontale permette di identificare rapidamente i 'Power Products' che trainano il fatturato e le categorie 'Zombie' che non generano interesse."
       >
-         <div className="h-[500px] md:h-[800px] w-full">
+         <div className="h-[800px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={CLUSTER_DATA_UPDATED} layout="vertical" margin={{ top: 20, right: 60, left: 0, bottom: 20 }}>
+                <BarChart data={CLUSTER_DATA_UPDATED} layout="vertical" margin={{ top: 20, right: 60, left: 100, bottom: 20 }}>
                     <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(255,255,255,0.05)" />
                     <XAxis type="number" axisLine={false} tickLine={false} tick={{fontSize: 11, fill: '#94a3b8'}} />
                     <YAxis 
@@ -528,15 +526,15 @@ const BrandAnalysisView = () => {
                         type="category" 
                         axisLine={false} 
                         tickLine={false} 
-                        tick={{fontSize: 10, fill: '#cbd5e1', fontWeight: 500}} 
-                        width={90}
+                        tick={{fontSize: 11, fill: '#cbd5e1', fontWeight: 500}} 
+                        width={100}
                     />
                     <Tooltip cursor={{fill: 'rgba(45,212,191,0.05)'}} content={<CustomTooltip />} />
                     <Legend wrapperStyle={{paddingBottom: '20px'}} />
-                    <Bar dataKey="google" name="Google" fill="#2dd4bf" stackId="a" barSize={15} />
-                    <Bar dataKey="tiktok" name="TikTok" fill="#f472b6" stackId="a" barSize={15} />
+                    <Bar dataKey="google" name="Google" fill="#2dd4bf" stackId="a" barSize={20} />
+                    <Bar dataKey="tiktok" name="TikTok" fill="#f472b6" stackId="a" barSize={20} />
                     {/* Added LabelList to the last bar (Amazon) to show YoY at the end of the stack */}
-                    <Bar dataKey="amazon" name="Amazon" fill="#fbbf24" radius={[0, 4, 4, 0]} stackId="a" barSize={15}>
+                    <Bar dataKey="amazon" name="Amazon" fill="#fbbf24" radius={[0, 4, 4, 0]} stackId="a" barSize={20}>
                         <LabelList dataKey="yoy" position="right" content={renderYoYLabel} />
                     </Bar>
                 </BarChart>
@@ -553,6 +551,13 @@ const BrandAnalysisView = () => {
                 Le <strong>Ciabatte Mare</strong> e <strong>Sneakers Zeppa</strong> dominano su Amazon. L'utente qui cerca comodità e prezzo competitivo, meno il brand puro.
              </InsightBox>
          </div>
+         <AnalysisGuide>
+            <strong>Come leggere questo grafico:</strong> Ogni barra rappresenta il volume totale di ricerca per un cluster merceologico (es. "Sandali"). I colori indicano la provenienza della ricerca (Google, TikTok, Amazon). 
+            <br/><br/>
+            <strong>Utilità Strategica per il Marketing Manager:</strong> Le barre con una forte componente Gialla (Amazon) sono prodotti dove il prezzo è la leva principale. Le barre con forte componente Rosa (TikTok) sono prodotti "Trend" o "Viral" da spingere sui social. Le barre con forte componente Verde (Google) sono i pilastri storici del brand da presidiare con la SEO.
+            <br/>
+            <strong>Insight Operativo:</strong> I Sandali Gioiello sono l'asset strategico indiscusso su Google, mentre gli Anfibi dominano la scena social. Questa discrepanza suggerisce una strategia differenziata: branding emozionale su TikTok per gli stivali, campagne conversion-based su Google per i sandali.
+         </AnalysisGuide>
       </Card>
     </div>
   );
@@ -650,30 +655,30 @@ const SeasonalityView = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
        <DemoDataAlert />
-       <div className="flex flex-col md:flex-row justify-between md:items-end mb-4 gap-4">
+       <div className="flex flex-col md:flex-row justify-between items-end mb-4 gap-4">
           <div>
-              <h2 className="text-xl md:text-2xl font-bold text-white flex items-center tracking-tight">
+              <h2 className="text-2xl font-bold text-white flex items-center tracking-tight">
                   <Clock className="w-6 h-6 mr-3 text-teal-400" />
-                  Seasonality & Trends
+                  Seasonality & Trends (Not Brand)
               </h2>
-              <p className="text-slate-400 text-sm mt-1">Studio della stagionalità delle ricerche generiche.</p>
+              <p className="text-slate-400 text-sm mt-1">Studio della stagionalità delle ricerche generiche (es. "scarpe donna") per pianificare le campagne.</p>
           </div>
           
-          <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+          <div className="flex gap-4">
             <button 
                 onClick={handleExport}
-                className="flex items-center justify-center bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg border border-white/10 text-xs font-bold transition-all w-full md:w-auto"
+                className="flex items-center bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg border border-white/10 text-xs font-bold transition-all"
             >
                 <Download className="w-3 h-3 mr-2 text-teal-400" />
                 Export CSV
             </button>
 
-            <div className="flex bg-slate-900 rounded-lg p-1 border border-white/10 w-full md:w-auto overflow-x-auto">
+            <div className="flex bg-slate-900 rounded-lg p-1 border border-white/10">
                 {['Google', 'TikTok', 'Amazon', 'All'].map(p => (
                     <button 
                         key={p}
                         onClick={() => setPlatform(p)}
-                        className={`px-4 py-2 text-xs font-bold rounded-md transition-all flex-1 whitespace-nowrap ${platform === p ? 'bg-teal-500 text-slate-900 shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                        className={`px-4 py-2 text-xs font-bold rounded-md transition-all ${platform === p ? 'bg-teal-500 text-slate-900 shadow-lg' : 'text-slate-400 hover:text-white'}`}
                     >
                         {p}
                     </button>
@@ -686,9 +691,9 @@ const SeasonalityView = () => {
           <div className="lg:col-span-9 space-y-6">
              <Card 
                 title={`Trend Stagionali (${platform})`}
-                description="Analisi temporale delle keyword generiche. Questo grafico permette di visualizzare i picchi di domanda durante l'anno."
+                description="Analisi temporale delle keyword generiche. Questo grafico permette di visualizzare i picchi di domanda durante l'anno, essenziale per sincronizzare il lancio di prodotti o promozioni. I dati variano in base alla piattaforma selezionata."
                 action={
-                    <div className="flex gap-2 flex-wrap">
+                    <div className="flex gap-2">
                          <button onClick={() => setShowSaldi(!showSaldi)} className={`px-3 py-1 rounded border text-xs font-bold transition-all ${showSaldi ? 'bg-pink-500/20 border-pink-500 text-pink-400' : 'border-white/10 text-slate-400'}`}>
                             {showSaldi ? 'Saldi' : 'Saldi'}
                          </button>
@@ -701,7 +706,7 @@ const SeasonalityView = () => {
                     </div>
                 }
              >
-                <div className="h-[300px] md:h-[500px] w-full">
+                <div className="h-[500px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartData} margin={{ top: 20, right: 20, left: -10, bottom: 0 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
@@ -711,9 +716,9 @@ const SeasonalityView = () => {
                         <Legend verticalAlign="top" height={60} iconType="circle" wrapperStyle={{fontSize: '11px'}} />
                         
                         {/* Linee eventi chiave Toggleable */}
-                        {showSaldi && <ReferenceLine x="Gen" stroke="#f472b6" strokeDasharray="3 3" label={{ value: 'SALDI', fill: '#f472b6', fontSize: 10, position: 'insideTop' }} />}
-                        {showSaldi && <ReferenceLine x="Lug" stroke="#f472b6" strokeDasharray="3 3" />}
-                        {showBF && <ReferenceLine x="Nov" stroke="#a855f7" strokeDasharray="3 3" label={{ value: 'BF', fill: '#a855f7', fontSize: 10, position: 'insideTop' }} />}
+                        {showSaldi && <ReferenceLine x="Gen" stroke="#f472b6" strokeDasharray="3 3" label={{ value: 'SALDI INV.', fill: '#f472b6', fontSize: 10, position: 'insideTop' }} />}
+                        {showSaldi && <ReferenceLine x="Lug" stroke="#f472b6" strokeDasharray="3 3" label={{ value: 'SALDI EST.', fill: '#f472b6', fontSize: 10, position: 'insideTop' }} />}
+                        {showBF && <ReferenceLine x="Nov" stroke="#a855f7" strokeDasharray="3 3" label={{ value: 'BLACK FRIDAY', fill: '#a855f7', fontSize: 10, position: 'insideTop' }} />}
                         {showXmas && <ReferenceLine x="Dic" stroke="#ef4444" strokeDasharray="3 3" label={{ value: 'NATALE', fill: '#ef4444', fontSize: 10, position: 'insideTopLeft' }} />}
 
                         <Line type="monotone" dataKey="sandali" stroke="#fbbf24" strokeWidth={2} dot={false} />
@@ -721,6 +726,11 @@ const SeasonalityView = () => {
                         <Line type="monotone" dataKey="cerimonia" stroke="#818cf8" strokeWidth={2} dot={false} />
                         <Line type="monotone" dataKey="sneakers" stroke="#f472b6" strokeWidth={2} dot={false} />
                         <Line type="monotone" dataKey="anfibi" stroke="#34d399" strokeWidth={2} dot={false} />
+                        <Line type="monotone" dataKey="zeppe" stroke="#fb7185" strokeWidth={2} dot={false} />
+                        <Line type="monotone" dataKey="mocassini" stroke="#a78bfa" strokeWidth={2} dot={false} />
+                        <Line type="monotone" dataKey="borse" stroke="#c084fc" strokeWidth={2} dot={false} />
+                        <Line type="monotone" dataKey="zaini" stroke="#60a5fa" strokeWidth={2} dot={false} />
+                        <Line type="monotone" dataKey="accessori" stroke="#94a3b8" strokeWidth={2} strokeDasharray="4 4" dot={false} />
                     </LineChart>
                     </ResponsiveContainer>
                 </div>
@@ -753,7 +763,11 @@ const SeasonalityView = () => {
                 </div>
 
                 <AnalysisGuide>
-                    <strong>Lettura del grafico:</strong> Questo grafico mostra l'andamento annuale della domanda per categorie generiche (NON brandizzate).
+                    <strong>Lettura del grafico:</strong> Questo grafico mostra l'andamento annuale della domanda per categorie generiche (NON brandizzate). Traccia l'andamento temporale della domanda di mercato (keyword generiche) mese per mese. Fondamentale per il timing delle campagne: anticipare il picco di domanda significa acquisire clienti a CPC inferiore prima che la competizione saturi l'asta.
+                    <br/>
+                    <strong>Perché varia per piattaforma?</strong> Google mostra quando la gente "cerca" informazioni. TikTok mostra quando la gente "guarda" trend (spesso anticipa Google). Amazon mostra quando la gente "compra" (picchi più concentrati su eventi come Prime Day/Black Friday).
+                    <br/>
+                    <strong>Azione:</strong> Si osserva una stagionalità anticipata su TikTok rispetto a Google: gli utenti cercano ispirazione visiva (Discovery) circa 30 giorni prima di effettuare la ricerca transazionale su Google. Le campagne Awareness devono partire a Settembre per gli stivali, non a Ottobre.
                 </AnalysisGuide>
              </Card>
           </div>
@@ -771,10 +785,10 @@ const SeasonalityView = () => {
                 </button>
              </Card>
              <InsightBox title={`Insight ${platform}`}>
-                {platform === 'Google' && "La stagionalità è canonica: Cerimonia a Maggio, Sandali a Luglio, Stivali a Dicembre."}
-                {platform === 'TikTok' && "Notiamo picchi anticipati per 'Anfibi' e 'Cappelli'."}
-                {platform === 'Amazon' && "Forte concentrazione su 'Prime Day' (Luglio) per Zeppe e Sneakers."}
-                {platform === 'All' && "Visione complessiva: Il mercato si muove a ondate."}
+                {platform === 'Google' && "La stagionalità è canonica: Cerimonia a Maggio, Sandali a Luglio, Stivali a Dicembre. Pianifica con 2 mesi di anticipo la SEO."}
+                {platform === 'TikTok' && "Notiamo picchi anticipati per 'Anfibi' e 'Cappelli'. Su TikTok la 'Discovery' avviene 1 mese prima dell'acquisto reale."}
+                {platform === 'Amazon' && "Forte concentrazione su 'Prime Day' (Luglio) per Zeppe e Sneakers. A Novembre spike massivo per Stivali."}
+                {platform === 'All' && "Visione complessiva: Il mercato si muove a ondate. I volumi totali a Dicembre raddoppiano grazie al gifting."}
              </InsightBox>
           </div>
        </div>
@@ -794,11 +808,16 @@ const HeroProductView = () => {
         <DemoDataAlert />
         <div className="flex justify-between items-start">
              <div>
-                <h2 className="text-xl md:text-2xl font-bold text-white flex items-center tracking-tight">
+                <h2 className="text-2xl font-bold text-white flex items-center tracking-tight">
                     <Target className="w-6 h-6 mr-3 text-teal-400" />
-                    Hero Product Deep Dive
+                    Hero Product Study
                 </h2>
                 <p className="text-slate-400 text-sm mt-1">Analisi del prodotto dominante: <span className="text-teal-400 font-bold uppercase">{heroProduct.name}</span>.</p>
+             </div>
+             <div className="text-right">
+                <div className="text-xs text-slate-500 uppercase font-bold">Incidenza sul Brand</div>
+                <div className="text-3xl font-mono text-white font-bold">{heroPercentage}%</div>
+                <div className="text-xs text-emerald-400 font-bold">Volume: {heroProduct.google.toLocaleString()}</div>
              </div>
         </div>
 
@@ -811,32 +830,13 @@ const HeroProductView = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card title="Incidenza Volume Brand" description="Quanto pesa l'Hero Product sul totale delle ricerche brandizzate?">
-                <div className="flex items-center justify-center h-[200px]">
-                     <div className="relative flex items-center justify-center">
-                         <div className="absolute inset-0 bg-teal-500 blur-2xl opacity-20 rounded-full"></div>
-                         <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white to-teal-400 z-10">
-                            {heroPercentage}%
-                         </div>
-                     </div>
-                </div>
-                <div className="text-center mt-2">
-                    <p className="text-sm text-slate-300">
-                        Di tutte le ricerche collegate a "CafèNoir", il <span className="text-teal-400 font-bold">{heroPercentage}%</span> riguarda specificamente <strong>{heroProduct.name}</strong>.
-                    </p>
-                </div>
-            </Card>
-
-            <Card title="Analisi Competitiva Diretta" description="Confronto Share of Voice con i competitor selezionati.">
+            <Card title="Analisi Competitiva Diretta" description="Analisi comparativa diretta tra il tuo Hero Product e i prodotti equivalenti dei principali competitor. Monitoriamo Share of Voice (visibilità) e Prezzo Medio per capire se stiamo perdendo quote di mercato a causa di un posizionamento prezzo errato o di una scarsa pressione pubblicitaria.">
                 <div className="space-y-4 mt-2">
                     {COMPETITORS_HERO.map((comp, i) => (
-                        <div key={i} className="bg-slate-900/50 p-4 rounded-lg border border-white/5 flex justify-between items-center group hover:border-white/10 transition-colors cursor-pointer">
-                            <div className="flex items-center gap-3">
-                                <div className="w-4 h-4 rounded-full border border-slate-500 group-hover:border-teal-400 group-hover:bg-teal-400/20 transition-all"></div>
-                                <div>
-                                    <div className="font-bold text-white text-sm">{comp.name}</div>
-                                    <div className="text-xs text-slate-500 mt-1">Prezzo Medio: <span className="text-slate-300">€{comp.mainProductPrice}</span></div>
-                                </div>
+                        <div key={i} className="bg-slate-900/50 p-4 rounded-lg border border-white/5 flex justify-between items-center">
+                            <div>
+                                <div className="font-bold text-white text-sm">{comp.name}</div>
+                                <div className="text-xs text-slate-500 mt-1">Prezzo Medio: <span className="text-slate-300">€{comp.mainProductPrice}</span></div>
                             </div>
                             <div className="text-right">
                                 <div className="text-xs text-slate-500 uppercase tracking-wider">Share of Voice</div>
@@ -847,12 +847,9 @@ const HeroProductView = () => {
                     {/* Il Nostro Brand */}
                     <div className="bg-teal-500/10 p-4 rounded-lg border border-teal-500/30 flex justify-between items-center relative overflow-hidden">
                         <div className="absolute left-0 top-0 h-full w-1 bg-teal-500"></div>
-                        <div className="flex items-center gap-3">
-                            <Check className="w-4 h-4 text-teal-400" />
-                            <div>
-                                <div className="font-bold text-white text-sm">CAFÈNOIR (Tu)</div>
-                                <div className="text-xs text-slate-400 mt-1">Prezzo Medio: <span className="text-white">€129</span></div>
-                            </div>
+                        <div>
+                            <div className="font-bold text-white text-sm">CAFÈNOIR</div>
+                            <div className="text-xs text-slate-400 mt-1">Prezzo Medio: <span className="text-white">€129</span></div>
                         </div>
                         <div className="text-right">
                             <div className="text-xs text-slate-400 uppercase tracking-wider">Share of Voice</div>
@@ -861,11 +858,13 @@ const HeroProductView = () => {
                     </div>
                 </div>
                 <AnalysisGuide>
-                    <strong>Analisi Prezzo/Share:</strong> Confrontiamo il prezzo medio del nostro Hero Product con i competitor. Seleziona un competitor per il dettaglio.
+                    <strong>Analisi Prezzo/Share:</strong> Confrontiamo il prezzo medio del nostro Hero Product con i competitor che bidano sulle stesse keyword.
+                    <br/>
+                    <strong>Insight:</strong> Nonostante un prezzo premium (€129), CafèNoir mantiene una buona quota di mercato. Tuttavia, il Competitor B sta erodendo margini nel segmento mass market con un prezzo aggressivo (€99). È necessario giustificare il premium price con contenuti che esaltino la qualità dei materiali.
                 </AnalysisGuide>
             </Card>
 
-            <div className="space-y-6 lg:col-span-2">
+            <div className="space-y-6">
                 <Card title="Strategie di Crescita">
                     <div className="space-y-6">
                          <div className="flex items-start gap-4">
@@ -873,7 +872,7 @@ const HeroProductView = () => {
                             <div>
                                 <h4 className="text-sm font-bold text-slate-200">Idea Bundle: "Cerimonia Pack"</h4>
                                 <p className="text-xs text-slate-400 leading-relaxed mt-1">
-                                    Dato il prezzo medio competitivo (€129) rispetto al Lusso (€180), crea un bundle: Sandali Gioiello + Pochette Abbinata.
+                                    Dato il prezzo medio competitivo (€129) rispetto al Lusso (€180), crea un bundle: Sandali Gioiello + Pochette Abbinata (cluster correlato) con uno sconto del 10% sul set.
                                 </p>
                             </div>
                          </div>
@@ -882,7 +881,7 @@ const HeroProductView = () => {
                             <div>
                                 <h4 className="text-sm font-bold text-slate-200">Espansione Keywords</h4>
                                 <p className="text-xs text-slate-400 leading-relaxed mt-1">
-                                    Aggredisci keyword long-tail come "sandali gioiello tacco basso comodi".
+                                    Aggredisci keyword long-tail come "sandali gioiello tacco basso comodi" dove il Competitor B (Mass Market) è debole sulla percezione di qualità.
                                 </p>
                             </div>
                          </div>
@@ -890,7 +889,7 @@ const HeroProductView = () => {
                 </Card>
                 
                 <InsightBox title="Cross-Selling">
-                   Chi compra <strong>Sandali Gioiello</strong> ha un'alta probabilità di cercare <strong>Sciarpe/Stole</strong> eleganti. Usa il checkout per proporre l'accessorio.
+                   Chi compra <strong>Sandali Gioiello</strong> ha un'alta probabilità di cercare <strong>Sciarpe/Stole</strong> eleganti (vedi dati Seasonality). Usa il checkout per proporre l'accessorio.
                 </InsightBox>
             </div>
         </div>
@@ -910,26 +909,26 @@ const AINodesView = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <DemoDataAlert />
-      <div className="flex flex-col md:flex-row justify-between md:items-center mb-4 gap-4">
+      <div className="flex justify-between items-center mb-4">
          <div>
-            <h2 className="text-xl md:text-2xl font-bold text-white flex items-center tracking-tight">
+            <h2 className="text-2xl font-bold text-white flex items-center tracking-tight">
                 <BrainCircuit className="w-6 h-6 mr-3 text-teal-400" />
                 Query Fan Out (AI Analysis)
             </h2>
-            <p className="text-slate-400 text-sm mt-1">Scopri come l'AI espande i concetti legati al brand CafèNoir.</p>
+            <p className="text-slate-400 text-sm mt-1">Scopri come l'Intelligenza Artificiale espande i concetti legati al brand CafèNoir.</p>
          </div>
       </div>
 
-      <div className="glass p-4 md:p-6 rounded-xl border-t border-teal-500/20 mb-6">
-         <div className="flex flex-col md:flex-row gap-4 mb-4">
+      <div className="glass p-6 rounded-xl border-t border-teal-500/20 mb-6">
+         <div className="flex gap-4 mb-4">
             <input 
                 type="text" 
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                placeholder="Inserisci una query seed (es. CafèNoir Saldi)..." 
+                placeholder="Simulazione su: CafèNoir..." 
                 className="flex-1 bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white focus:ring-1 focus:ring-teal-500 focus:border-teal-500"
             />
-            <button className="bg-teal-500 hover:bg-teal-600 text-slate-900 font-bold px-6 py-2 rounded-lg transition-colors w-full md:w-auto">
+            <button className="bg-teal-500 hover:bg-teal-600 text-slate-900 font-bold px-6 py-2 rounded-lg transition-colors">
                 Analizza
             </button>
          </div>
@@ -939,7 +938,7 @@ const AINodesView = () => {
          {QUERY_FAN_OUT_DATA.map(node => (
             <div key={node.id} className="glass rounded-xl overflow-hidden border border-white/5">
                <div 
-                 className="p-4 flex flex-col md:flex-row md:items-center justify-between cursor-pointer hover:bg-white/5 transition-colors gap-4"
+                 className="p-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
                  onClick={() => toggleNode(node.id)}
                >
                  <div className="flex items-center gap-4">
@@ -953,14 +952,14 @@ const AINodesView = () => {
                         </div>
                     </div>
                  </div>
-                 <ArrowRight className={`w-5 h-5 text-slate-500 transition-transform self-end md:self-auto ${expandedNodes.includes(node.id) ? 'rotate-90' : ''}`} />
+                 <ArrowRight className={`w-5 h-5 text-slate-500 transition-transform ${expandedNodes.includes(node.id) ? 'rotate-90' : ''}`} />
                </div>
 
                {expandedNodes.includes(node.id) && (
                  <div className="p-4 pt-0 border-t border-white/5 bg-slate-900/30">
-                    <div className="mt-4 space-y-4 md:pl-4 md:border-l-2 border-teal-500/20">
+                    <div className="mt-4 space-y-4 pl-4 border-l-2 border-teal-500/20">
                         {node.branches.map((branch, i) => (
-                            <div key={i} className="flex flex-col md:flex-row justify-between items-start md:items-center group py-2 border-b border-white/5 last:border-0 gap-2">
+                            <div key={i} className="flex justify-between items-center group py-2 border-b border-white/5 last:border-0">
                                 <div className="flex items-center gap-3">
                                     <div className={`w-2 h-2 rounded-full ${branch.llm === 'Gemini' ? 'bg-blue-400' : branch.llm === 'GPT-4' ? 'bg-emerald-400' : 'bg-orange-400'}`} />
                                     <div>
@@ -968,7 +967,7 @@ const AINodesView = () => {
                                         <span className="text--[10px] text-slate-500">{branch.llm === 'GPT-4' ? 'Suggerito da OpenAI' : branch.llm === 'Gemini' ? 'Suggerito da Google' : 'Suggerito da Anthropic'}</span>
                                     </div>
                                 </div>
-                                <div className="flex flex-row md:flex-col items-center md:items-end gap-2 md:gap-1 pl-5 md:pl-0 w-full md:w-auto justify-between md:justify-end">
+                                <div className="flex flex-col items-end gap-1">
                                     <span className="text-[10px] bg-teal-500/10 text-teal-300 px-2 py-0.5 rounded border border-teal-500/20 uppercase font-bold">{branch.sentiment}</span>
                                     <span className="text-[10px] text-slate-500">Confidence: {branch.confidence}%</span>
                                 </div>
@@ -977,7 +976,9 @@ const AINodesView = () => {
                     </div>
                     
                     <InsightBox title="Insight Semantico">
-                        Utilizza LLM (GPT-4, Gemini, Claude) per esplorare le associazioni semantiche laterali che gli utenti fanno con il brand.
+                        Utilizza LLM (GPT-4, Gemini, Claude) per esplorare le associazioni semantiche laterali che gli utenti fanno con il brand. Questo diagramma interattivo svela intenti di ricerca nascosti. 
+                        <br/>
+                        <strong>Azione:</strong> L'IA rileva una forte correlazione semantica tra il brand e il concetto di 'Comodità' per le cerimonie. Questo è un insight cruciale per il copy: gli utenti non cercano solo estetica, ma garanzia di comfort per eventi lunghi. Integrare 'Comode' nelle descrizioni aumenterà il CTR.
                     </InsightBox>
                  </div>
                )}
@@ -1021,12 +1022,12 @@ const GSCView = () => {
         };
     }, []);
 
-    // Mock Data for Last 3 Months Performance Delta with specific YoY for both Clicks and Impressions
-    const LAST_3_MONTHS_DETAILED = [
-        { type: 'Brand', metric: 'Clicks', current: 12500, previous: 11100, yoy: 12.5 },
-        { type: 'Brand', metric: 'Impressions', current: 450000, previous: 428000, yoy: 5.2 },
-        { type: 'Generic', metric: 'Clicks', current: 3200, previous: 3500, yoy: -8.4 },
-        { type: 'Generic', metric: 'Impressions', current: 180000, previous: 212000, yoy: -15.1 },
+    // Mock Data for Last 3 Months Performance Delta
+    const LAST_3_MONTHS_DATA = [
+        { type: 'Brand', metric: 'Clicks', value: 12500, yoy: 12.5 },
+        { type: 'Brand', metric: 'Impressions', value: 450000, yoy: 5.2 },
+        { type: 'Generic', metric: 'Clicks', value: 3200, yoy: -8.4 },
+        { type: 'Generic', metric: 'Impressions', value: 180000, yoy: -15.1 },
     ];
 
     return (
@@ -1034,15 +1035,20 @@ const GSCView = () => {
       <DemoDataAlert />
       <div className="flex justify-between items-start">
          <div>
-             <h2 className="text-xl md:text-2xl font-bold text-white flex items-center tracking-tight">
+             <h2 className="text-2xl font-bold text-white flex items-center tracking-tight">
                 <Search className="w-6 h-6 mr-3 text-teal-400" />
                 Organic Search Performance
              </h2>
              <p className="text-slate-400 text-sm mt-1">
                 Analisi profonda delle performance GSC. Focus su split Brand/Generic e trend YoY dei cluster.
+                <br/>
+                <span className="text-xs text-amber-400 flex items-center mt-1">
+                    <AlertCircle className="w-3 h-3 mr-1" />
+                    Disclaimer: I volumi organici brand possono essere influenzati dall'attività di Bidding Paid (Brand Protection).
+                </span>
              </p>
          </div>
-         <button className="hidden md:flex items-center gap-2 bg-teal-600 hover:bg-teal-500 text-white px-6 py-2 rounded-lg transition-all shadow-[0_0_15px_rgba(45,212,191,0.3)]">
+         <button className="flex items-center gap-2 bg-teal-600 hover:bg-teal-500 text-white px-6 py-2 rounded-lg transition-all shadow-[0_0_15px_rgba(45,212,191,0.3)]">
             <LinkIcon className="w-4 h-4" />
             <span className="text-xs font-bold">GSC Connected</span>
          </button>
@@ -1050,42 +1056,33 @@ const GSCView = () => {
 
       {/* Brand vs Generic Split and Delta */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card title="Year-over-Year Performance Matrix" description="Analisi dettagliata della variazione % rispetto all'anno precedente (YoY) per Brand e Generic Traffic.">
-                <div className="grid grid-cols-2 gap-4 h-auto">
-                    {LAST_3_MONTHS_DETAILED.map((item, i) => (
-                        <div key={i} className={`p-4 rounded-lg border flex flex-col justify-center relative overflow-hidden ${item.type === 'Brand' ? 'bg-teal-500/5 border-teal-500/20' : 'bg-pink-500/5 border-pink-500/20'}`}>
-                            {/* Decorative Background Icon */}
-                            <div className="absolute -right-4 -bottom-4 opacity-10">
-                                {item.yoy > 0 ? <TrendingUp className="w-24 h-24" /> : <TrendingDown className="w-24 h-24" />}
-                            </div>
-                            
-                            <div className="flex justify-between items-start z-10">
-                                <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">{item.type} {item.metric}</div>
-                                <div className={`px-2 py-0.5 rounded text-[10px] font-bold ${item.type === 'Brand' ? 'bg-teal-500/20 text-teal-400' : 'bg-pink-500/20 text-pink-400'}`}>
-                                    {item.type}
-                                </div>
-                            </div>
-                            
-                            <div className="text-2xl font-bold text-white z-10 mt-1">{item.current.toLocaleString()}</div>
-                            <div className="text-[10px] text-slate-500 mb-2 z-10">vs {item.previous.toLocaleString()} (Prev. Year)</div>
-                            
-                            <div className={`text-sm font-mono font-bold flex items-center z-10 ${item.yoy >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+          <Card title="Performance Ultimi 3 Mesi (YoY)" description="Monitora la variazione percentuale (YoY) del traffico organico, segmentando tra ricerche Brand (utenti che vi cercano) e Generic (utenti che cercano prodotti). Questo split è vitale per capire se la crescita è sana (nuovi utenti) o solo frutto di notorietà pregressa.">
+                <div className="grid grid-cols-2 md:grid-cols-2 gap-4 h-[250px]">
+                    {LAST_3_MONTHS_DATA.map((item, i) => (
+                        <div key={i} className={`p-4 rounded-lg border flex flex-col justify-center ${item.type === 'Brand' ? 'bg-teal-500/5 border-teal-500/20' : 'bg-pink-500/5 border-pink-500/20'}`}>
+                            <div className="text-[10px] uppercase font-bold text-slate-400 mb-1 tracking-wider">{item.type} {item.metric}</div>
+                            <div className="text-2xl font-bold text-white mb-2">{item.value.toLocaleString()}</div>
+                            <div className={`text-sm font-mono font-bold flex items-center ${item.yoy >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                                 {item.yoy >= 0 ? <TrendingUp className="w-4 h-4 mr-2"/> : <TrendingDown className="w-4 h-4 mr-2"/>}
                                 {item.yoy > 0 ? '+' : ''}{item.yoy}% YoY
                             </div>
                         </div>
                     ))}
                 </div>
+                <div className="flex justify-center gap-6 mt-4">
+                    <div className="flex items-center"><div className="w-3 h-3 bg-teal-500/20 border border-teal-500 rounded-full mr-2"></div><span className="text-xs text-slate-300">Brand Traffic</span></div>
+                    <div className="flex items-center"><div className="w-3 h-3 bg-pink-500/20 border border-pink-500 rounded-full mr-2"></div><span className="text-xs text-slate-300">Generic Traffic</span></div>
+                </div>
                 <div className="mt-4 border-t border-white/5 pt-3">
                     <p className="text-xs text-slate-400 leading-relaxed text-balance">
-                         Il grafico mostra chiaramente che mentre il Brand tiene (+12.5% Clicks), il traffico Generico sta soffrendo (-8.4% Clicks e -15.1% Impressions). <strong>Azione richiesta:</strong> Revisione contenuti Top Funnel.
+                         Il calo del traffico generico (-8.4% Clicks) è un segnale d'allarme: il sito sta perdendo visibilità su keyword competitive come 'Sneakers'. Al contrario, la tenuta del Brand (+12.5%) conferma la fedeltà della customer base storica, ma non basta per scalare.
                     </p>
                 </div>
           </Card>
 
           {/* YoY Winners & Losers Lists (Improved Aesthetics) */}
-          <Card title="Brand Cluster Trends (Clicks YoY)" description="Classifica i cluster semantici in base alla velocità di crescita o decrescita dei clic rispetto all'anno precedente.">
-             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 h-[500px] md:h-[300px]">
+          <Card title="Brand Cluster Trends (Clicks YoY)" description="Classifica i cluster semantici in base alla velocità di crescita o decrescita dei clic rispetto all'anno precedente. Identifica istantaneamente quali categorie stanno diventando trend emergenti e quali sono in fase di declino strutturale.">
+             <div className="grid grid-cols-2 gap-6 h-[300px]">
                 {/* Winners */}
                 <div className="bg-slate-900/30 rounded-lg p-4 border border-emerald-500/10 flex flex-col">
                     <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-4 flex items-center">
@@ -1132,6 +1129,10 @@ const GSCView = () => {
 
       <AnalysisGuide>
         <strong>Analisi Performance Organica:</strong> Questa tab incrocia i dati GSC reali.
+        <br/>
+        1. <strong>Brand vs Generic:</strong> Se i Clic sono dominati dal Brand (Verde) > 80%, significa che il sito vive di rendita sulla notorietà e non acquisisce nuovi clienti generici. Obiettivo: alzare la quota Rosa (Generic).
+        <br/>
+        2. <strong>YoY Trends:</strong> "Store Locator" in crescita (+35%) indica un ritorno al fisico (ROPO). Il calo di "Sneakers" (-45%) è un alert critico: il prodotto non è più trend o c'è un problema tecnico/competitivo sulle serp. L'esplosione di 'Store Locator' (+35%) suggerisce un forte ritorno al retail fisico (effetto ROPO). Il crollo delle 'Sneakers' (-45%) indica che i modelli attuali non risuonano più con il mercato.
       </AnalysisGuide>
   </div>
 );
@@ -1142,7 +1143,6 @@ const GSCView = () => {
 const App = () => {
   const [activeTab, setActiveTab] = useState('market');
   const [copied, setCopied] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleCopyLink = () => {
       navigator.clipboard.writeText(window.location.href);
@@ -1174,48 +1174,10 @@ const App = () => {
       {label}
     </button>
   );
-  
-  const MobileNavItem = ({ id, icon: Icon, label }) => (
-    <button 
-      onClick={() => {
-        setActiveTab(id);
-        setMobileMenuOpen(false);
-      }}
-      className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 mb-1 ${
-        activeTab === id 
-          ? 'bg-teal-500/10 text-teal-400 border border-teal-500/30 shadow-[0_0_15px_rgba(45,212,191,0.2)]' 
-          : 'text-slate-400 hover:text-white hover:bg-white/5'
-      }`}
-    >
-      <Icon className="w-5 h-5 mr-3" />
-      {label}
-    </button>
-  );
 
   return (
     <div className="min-h-screen flex flex-col text-slate-200 font-sans selection:bg-teal-500/30">
       <div className="flex flex-1 overflow-hidden">
-        
-        {/* Mobile Menu Overlay */}
-        {mobileMenuOpen && (
-            <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md p-4 md:hidden flex flex-col animate-in fade-in slide-in-from-left-4 duration-200">
-                <div className="flex justify-between items-center mb-8">
-                     <div className="flex items-center gap-2">
-                        <div className="bg-gradient-to-br from-teal-400 to-emerald-600 p-2 rounded-lg"><Hexagon className="w-6 h-6 text-white" /></div>
-                        <span className="text-lg font-bold text-white">BRAND<span className="text-teal-400">HORIZON</span></span>
-                     </div>
-                     <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-white"><X className="w-6 h-6" /></button>
-                </div>
-                <nav className="space-y-2 flex-1">
-                    <MobileNavItem id="market" icon={PieChartIcon} label="Brand Market Share" />
-                    <MobileNavItem id="forecast" icon={Clock} label="Seasonality Forecast" />
-                    <MobileNavItem id="hero" icon={Target} label="Hero Product Deep Dive" />
-                    <MobileNavItem id="ainodes" icon={BrainCircuit} label="AI Semantic Expansion" />
-                    <MobileNavItem id="gsc" icon={Search} label="Organic Performance" />
-                </nav>
-            </div>
-        )}
-
         {/* Sidebar */}
         <aside className="w-72 glass-strong hidden md:flex flex-col fixed h-full z-20 border-r border-white/5 bg-slate-950">
             {/* Branding Section (Top) - RESTORED */}
@@ -1261,48 +1223,41 @@ const App = () => {
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-cyan-900/10 blur-[150px] pointer-events-none"></div>
 
             <header className="glass-strong sticky top-0 z-10 border-b border-white/5 backdrop-blur-md">
-            <div className="px-4 py-4 md:px-8 md:py-5 flex items-center justify-between">
+            <div className="px-8 py-5 flex items-center justify-between">
                 <div>
-                    <div className="flex items-center gap-3">
-                        <button className="md:hidden text-slate-400 hover:text-white" onClick={() => setMobileMenuOpen(true)}>
-                            <Menu className="w-6 h-6" />
-                        </button>
-                        <div>
-                            <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
-                                <span className="hidden sm:inline">Dashboard</span>
-                                <ChevronRight className="w-3 h-3 hidden sm:inline" />
-                                <span className="text-teal-400 font-medium">
-                                    {activeTab === 'market' ? 'Cluster Analysis' : 
-                                    activeTab === 'ainodes' ? 'AI Query Expansion' :
-                                    activeTab === 'forecast' ? 'Seasonal Trends' :
-                                    activeTab === 'hero' ? 'Product Strategy' :
-                                    'Organic Search'}
-                                </span>
-                            </div>
-                            <h1 className="text-lg md:text-xl font-bold text-white capitalize flex items-center tracking-tight truncate max-w-[200px] sm:max-w-none">
-                                {activeTab === 'market' && <PieChartIcon className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
-                                {activeTab === 'ainodes' && <BrainCircuit className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
-                                {activeTab === 'forecast' && <Clock className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
-                                {activeTab === 'hero' && <Target className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
-                                {activeTab === 'gsc' && <Search className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
-                                {activeTab === 'market' ? 'Analisi Cluster Brand' : 
-                                activeTab === 'ainodes' ? 'Query Fan Out' :
-                                activeTab === 'forecast' ? 'Seasonality & Trends' :
-                                activeTab === 'hero' ? 'Hero Product Study' :
-                                'Organic Search Performance'}
-                            </h1>
-                        </div>
+                    <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                        <span>Dashboard</span>
+                        <ChevronRight className="w-3 h-3" />
+                        <span className="text-teal-400 font-medium">
+                            {activeTab === 'market' ? 'Cluster Analysis' : 
+                            activeTab === 'ainodes' ? 'AI Query Expansion' :
+                            activeTab === 'forecast' ? 'Seasonal Trends' :
+                            activeTab === 'hero' ? 'Product Strategy' :
+                            'Organic Search'}
+                        </span>
                     </div>
+                    <h1 className="text-xl font-bold text-white capitalize flex items-center tracking-tight">
+                        {activeTab === 'market' && <PieChartIcon className="w-5 h-5 mr-3 text-teal-400" />}
+                        {activeTab === 'ainodes' && <BrainCircuit className="w-5 h-5 mr-3 text-teal-400" />}
+                        {activeTab === 'forecast' && <Clock className="w-5 h-5 mr-3 text-teal-400" />}
+                        {activeTab === 'hero' && <Target className="w-5 h-5 mr-3 text-teal-400" />}
+                        {activeTab === 'gsc' && <Search className="w-5 h-5 mr-3 text-teal-400" />}
+                        {activeTab === 'market' ? 'Analisi Cluster Brand' : 
+                        activeTab === 'ainodes' ? 'Query Fan Out' :
+                        activeTab === 'forecast' ? 'Seasonality & Trends' :
+                        activeTab === 'hero' ? 'Hero Product Study' :
+                        'Organic Search Performance'}
+                    </h1>
                 </div>
-                <div className="flex items-center space-x-2 md:space-x-6">
+                <div className="flex items-center space-x-6">
                     <button
                         onClick={handleCopyLink}
-                        className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 transition-all text-xs font-bold mr-2 md:mr-4"
+                        className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 transition-all text-xs font-bold mr-4"
                     >
                         {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
-                        <span className="hidden sm:inline">{copied ? 'Link Copiato!' : 'Condividi Tool'}</span>
+                        <span>{copied ? 'Link Copiato!' : 'Condividi Tool'}</span>
                     </button>
-                    <div className="hidden sm:flex items-center space-x-2 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
+                    <div className="flex items-center space-x-2 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
                         <span className="text-[10px] text-emerald-400 font-mono uppercase tracking-widest font-bold">API Connected</span>
                     </div>
@@ -1310,7 +1265,7 @@ const App = () => {
             </div>
             </header>
             
-            <div className="p-4 md:p-8 max-w-[1600px] mx-auto relative z-0 flex-1 w-full">
+            <div className="p-8 max-w-[1600px] mx-auto relative z-0 flex-1 w-full">
             {renderContent()}
             </div>
 
@@ -1320,13 +1275,15 @@ const App = () => {
                     <div className="mb-6">
                         <Hexagon className="w-6 h-6 text-teal-500 mx-auto opacity-50 mb-4" />
                         <p className="text-sm text-slate-400 leading-relaxed text-balance">
-                            Brand Horizon.ai è la suite di <strong>Market Intelligence Predittiva</strong> progettata per Marketing Manager.
+                            Brand Horizon.ai è la suite di <strong>Market Intelligence Predittiva</strong> progettata per Marketing Manager che devono anticipare i trend.
+                            Integriamo dati di Ricerca (Google), Social (TikTok) e Marketplace (Amazon) per fornire una visione olistica del posizionamento del brand e guidare decisioni strategiche data-driven.
                         </p>
                     </div>
                     
                     <div className="flex gap-6 mb-8 border-t border-white/5 pt-6 w-full justify-center">
                         <button className="text-xs text-slate-500 hover:text-white flex items-center gap-2 transition-colors"><Download className="w-3 h-3" /> Export Report</button>
                         <button className="text-xs text-slate-500 hover:text-white flex items-center gap-2 transition-colors"><LinkIcon className="w-3 h-3" /> API Docs</button>
+                        <button className="text-xs text-slate-500 hover:text-white flex items-center gap-2 transition-colors"><MessageSquare className="w-3 h-3" /> Support</button>
                     </div>
 
                     <div className="text-[10px] text-slate-700 font-medium">
