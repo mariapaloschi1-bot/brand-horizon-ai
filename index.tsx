@@ -11,18 +11,10 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  AreaChart,
-  Area,
-  ComposedChart,
   PieChart,
   Pie,
   Cell,
   ReferenceLine,
-  ReferenceDot,
-  ReferenceArea,
-  ScatterChart,
-  Scatter,
-  ZAxis,
   LabelList
 } from 'recharts';
 import {
@@ -30,38 +22,23 @@ import {
   Share2,
   ArrowRight,
   Layers,
-  Globe,
-  Filter,
   Zap,
   Target,
   BrainCircuit,
   Clock,
   PieChart as PieChartIcon,
   Download,
-  Users,
-  Calendar,
-  Plus,
-  X,
   MapPin,
   TrendingUp,
   TrendingDown,
-  BarChart3,
-  HelpCircle,
   Lightbulb,
-  Box,
   Hexagon,
-  Eye,
-  MousePointer2,
-  Percent,
   Link as LinkIcon,
   AlertCircle,
-  Calculator,
   Activity,
   ChevronRight,
   MessageSquare,
-  Minus,
-  Check,
-  Copy
+  Check
 } from 'lucide-react';
 
 // --- Costanti Dati & Configurazioni ---
@@ -167,11 +144,11 @@ const QUERY_FAN_OUT_DATA = [
     root: "CafèNoir Slingback Rosse",
     volume: "12.5K",
     branches: [
-      { term: "cafènoir slingback rosse prezzo outlet", llm: "GPT-4", sentiment: "Transazionale", confidence: 95 },
-      { term: "abbinamento slingback rosse cerimonia", llm: "Gemini", sentiment: "Informativo", confidence: 92 },
-      { term: "scarpe rosse tacco comodo cafènoir", llm: "Claude", sentiment: "Ricerca Prodotto", confidence: 85 },
-      { term: "slingback simili valentino economiche", llm: "Gemini", sentiment: "Comparativo", confidence: 78 },
-      { term: "cafènoir rosso vernice recensioni", llm: "GPT-4", sentiment: "Valutativo", confidence: 88 },
+      { term: "cafènoir slingback rosse prezzo outlet", llm: "GPT-4", sentiment: "Transazionale", confidence: 95, category: "Purchase" },
+      { term: "abbinamento slingback rosse cerimonia", llm: "Gemini", sentiment: "Informativo", confidence: 92, category: "Style" },
+      { term: "scarpe rosse tacco comodo cafènoir", llm: "Claude", sentiment: "Ricerca Prodotto", confidence: 85, category: "Comfort" },
+      { term: "slingback simili valentino economiche", llm: "Gemini", sentiment: "Comparativo", confidence: 78, category: "Competitor" },
+      { term: "cafènoir rosso vernice recensioni", llm: "GPT-4", sentiment: "Valutativo", confidence: 88, category: "Review" },
     ]
   }
 ];
