@@ -443,7 +443,7 @@ const BrandAnalysisView = () => {
                 <select 
                     value={selectedMarket} 
                     onChange={(e) => setSelectedMarket(e.target.value)}
-                    className="bg-transparent border-none text-white text-sm focus:ring-0 [&>option]:bg-slate-900 cursor-pointer"
+                    className="bg-transparent border-none text-white text-sm focus:ring-0 [&_option]:bg-slate-900 cursor-pointer"
                 >
                     {MARKETS.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
@@ -1103,7 +1103,7 @@ const GSCView = () => {
       <AnalysisGuide>
         <strong>Analisi Performance Organica:</strong> Questa tab incrocia i dati GSC reali.
         <br/>
-        1. <strong>Brand vs Generic:</strong> Se i Clic sono dominati dal Brand (Verde) > 80%, significa che il sito vive di rendita sulla notorietà e non acquisisce nuovi clienti generici. Obiettivo: alzare la quota Rosa (Generic).
+        1. <strong>Brand vs Generic:</strong> Se i Clic sono dominati dal Brand (Verde) &gt; 80%, significa che il sito vive di rendita sulla notorietà e non acquisisce nuovi clienti generici. Obiettivo: alzare la quota Rosa (Generic).
         <br/>
         2. <strong>YoY Trends:</strong> "Store Locator" in crescita (+35%) indica un ritorno al fisico (ROPO). Il calo di "Sneakers" (-45%) è un alert critico: il prodotto non è più trend o c'è un problema tecnico/competitivo sulle serp. L'esplosione di 'Store Locator' (+35%) suggerisce un forte ritorno al retail fisico (effetto ROPO). Il crollo delle 'Sneakers' (-45%) indica che i modelli attuali non risuonano più con il mercato.
       </AnalysisGuide>
