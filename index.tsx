@@ -254,29 +254,30 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
 
-    // Tooltip per il Pie Chart (Tab 1)
+    // Tooltip per il Pie Chart (Tab 1) con Share% e YoY
     if (data.totalShare !== undefined) {
         return (
-            <div className="glass-strong p-4 rounded-lg shadow-2xl border border-teal-500/20 bg-slate-950/95 z-50 relative pointer-events-none">
-                <p className="text-teal-50 font-bold mb-2 text-sm">{data.name}</p>
+            <div className="glass-strong p-4 rounded-lg shadow-2xl border border-teal-500/20 bg-slate-950/95 z-50 relative pointer-events-none min-w-[200px] animate-in fade-in zoom-in-95 duration-200">
+                <p className="text-teal-50 font-bold mb-3 text-sm border-b border-white/10 pb-2">{data.name}</p>
                 <div className="flex flex-col space-y-2 text-xs">
                     <div className="flex justify-between items-center">
                         <span className="text-slate-400">Volume Canale:</span>
-                        <span className="text-white font-mono font-bold">
+                        <span className="text-white font-mono font-bold text-sm">
                             {payload[0].value.toLocaleString()}
                         </span>
                     </div>
                     {/* Share del cluster su tutte le ricerche brand */}
-                    <div className="flex justify-between items-center border-t border-white/10 pt-2">
+                    <div className="flex justify-between items-center">
                         <span className="text-slate-400">Share su Totale Brand:</span>
                         <span className="text-teal-400 font-bold font-mono">
                             {data.totalShare}%
                         </span>
                     </div>
                     {/* YoY specifico del cluster */}
-                    <div className="flex justify-between items-center">
-                        <span className="text-slate-400">YoY Cluster:</span>
-                        <span className={`font-bold font-mono ${data.specificYoY >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                    <div className="flex justify-between items-center mt-1 pt-2 border-t border-dashed border-white/10">
+                        <span className="text-slate-400">YoY Trend:</span>
+                        <span className={`font-bold font-mono text-sm ${data.specificYoY >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                            {data.specificYoY >= 0 ? <TrendingUp className="inline w-3 h-3 mr-1"/> : <TrendingDown className="inline w-3 h-3 mr-1"/>}
                             {data.specificYoY >= 0 ? '+' : ''}{data.specificYoY}%
                         </span>
                     </div>
@@ -495,7 +496,7 @@ const BrandAnalysisView = () => {
         <Card title="Brand Search Google" description="Visualizza la ripartizione percentuale delle ricerche brandizzate divise per piattaforma.">
             <DonutChartWithStats dataKey="google" platformName="Google" />
             <AnalysisGuide>
-                Google rimane il canale primario per intenzioni d'acquisto dirette e specifiche.
+                Google rimane il canale primario per intenzioni d'acquisto dirette e specifiche. <strong>Suggerimento:</strong> Passa il mouse sulle sezioni per vedere Share% e YoY.
             </AnalysisGuide>
         </Card>
         <Card title="Brand Search TikTok" description="Analizza la viralità e l'interesse su TikTok. Qui i volumi sono spesso legati a trend visivi.">
@@ -507,7 +508,7 @@ const BrandAnalysisView = () => {
         <Card title="Brand Search Amazon" description="Riflette l'intento transazionale puro. Su Amazon dominano categorie 'commodity'.">
             <DonutChartWithStats dataKey="amazon" platformName="Amazon" />
             <AnalysisGuide>
-                 Dominano i prodotti 'entry level' o funzionali.
+                 Dominano i prodotti 'entry level' o funzionali. Utile per strategie di prezzo aggressivo.
             </AnalysisGuide>
         </Card>
       </div>
@@ -795,14 +796,9 @@ const HeroProductView = () => {
              <div>
                 <h2 className="text-xl md:text-2xl font-bold text-white flex items-center tracking-tight">
                     <Target className="w-6 h-6 mr-3 text-teal-400" />
-                    Hero Product Study
+                    Hero Product Deep Dive
                 </h2>
                 <p className="text-slate-400 text-sm mt-1">Analisi del prodotto dominante: <span className="text-teal-400 font-bold uppercase">{heroProduct.name}</span>.</p>
-             </div>
-             <div className="text-right hidden md:block">
-                <div className="text-xs text-slate-500 uppercase font-bold">Incidenza sul Brand</div>
-                <div className="text-3xl font-mono text-white font-bold">{heroPercentage}%</div>
-                <div className="text-xs text-emerald-400 font-bold">Volume: {heroProduct.google.toLocaleString()}</div>
              </div>
         </div>
 
@@ -815,13 +811,32 @@ const HeroProductView = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card title="Analisi Competitiva Diretta" description="Analisi comparativa diretta tra il tuo Hero Product e i prodotti equivalenti dei principali competitor.">
+            <Card title="Incidenza Volume Brand" description="Quanto pesa l'Hero Product sul totale delle ricerche brandizzate?">
+                <div className="flex items-center justify-center h-[200px]">
+                     <div className="relative flex items-center justify-center">
+                         <div className="absolute inset-0 bg-teal-500 blur-2xl opacity-20 rounded-full"></div>
+                         <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white to-teal-400 z-10">
+                            {heroPercentage}%
+                         </div>
+                     </div>
+                </div>
+                <div className="text-center mt-2">
+                    <p className="text-sm text-slate-300">
+                        Di tutte le ricerche collegate a "CafèNoir", il <span className="text-teal-400 font-bold">{heroPercentage}%</span> riguarda specificamente <strong>{heroProduct.name}</strong>.
+                    </p>
+                </div>
+            </Card>
+
+            <Card title="Analisi Competitiva Diretta" description="Confronto Share of Voice con i competitor selezionati.">
                 <div className="space-y-4 mt-2">
                     {COMPETITORS_HERO.map((comp, i) => (
-                        <div key={i} className="bg-slate-900/50 p-4 rounded-lg border border-white/5 flex justify-between items-center">
-                            <div>
-                                <div className="font-bold text-white text-sm">{comp.name}</div>
-                                <div className="text-xs text-slate-500 mt-1">Prezzo Medio: <span className="text-slate-300">€{comp.mainProductPrice}</span></div>
+                        <div key={i} className="bg-slate-900/50 p-4 rounded-lg border border-white/5 flex justify-between items-center group hover:border-white/10 transition-colors cursor-pointer">
+                            <div className="flex items-center gap-3">
+                                <div className="w-4 h-4 rounded-full border border-slate-500 group-hover:border-teal-400 group-hover:bg-teal-400/20 transition-all"></div>
+                                <div>
+                                    <div className="font-bold text-white text-sm">{comp.name}</div>
+                                    <div className="text-xs text-slate-500 mt-1">Prezzo Medio: <span className="text-slate-300">€{comp.mainProductPrice}</span></div>
+                                </div>
                             </div>
                             <div className="text-right">
                                 <div className="text-xs text-slate-500 uppercase tracking-wider">Share of Voice</div>
@@ -832,9 +847,12 @@ const HeroProductView = () => {
                     {/* Il Nostro Brand */}
                     <div className="bg-teal-500/10 p-4 rounded-lg border border-teal-500/30 flex justify-between items-center relative overflow-hidden">
                         <div className="absolute left-0 top-0 h-full w-1 bg-teal-500"></div>
-                        <div>
-                            <div className="font-bold text-white text-sm">CAFÈNOIR</div>
-                            <div className="text-xs text-slate-400 mt-1">Prezzo Medio: <span className="text-white">€129</span></div>
+                        <div className="flex items-center gap-3">
+                            <Check className="w-4 h-4 text-teal-400" />
+                            <div>
+                                <div className="font-bold text-white text-sm">CAFÈNOIR (Tu)</div>
+                                <div className="text-xs text-slate-400 mt-1">Prezzo Medio: <span className="text-white">€129</span></div>
+                            </div>
                         </div>
                         <div className="text-right">
                             <div className="text-xs text-slate-400 uppercase tracking-wider">Share of Voice</div>
@@ -843,11 +861,11 @@ const HeroProductView = () => {
                     </div>
                 </div>
                 <AnalysisGuide>
-                    <strong>Analisi Prezzo/Share:</strong> Confrontiamo il prezzo medio del nostro Hero Product con i competitor.
+                    <strong>Analisi Prezzo/Share:</strong> Confrontiamo il prezzo medio del nostro Hero Product con i competitor. Seleziona un competitor per il dettaglio.
                 </AnalysisGuide>
             </Card>
 
-            <div className="space-y-6">
+            <div className="space-y-6 lg:col-span-2">
                 <Card title="Strategie di Crescita">
                     <div className="space-y-6">
                          <div className="flex items-start gap-4">
@@ -908,7 +926,7 @@ const AINodesView = () => {
                 type="text" 
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                placeholder="Simulazione su: CafèNoir..." 
+                placeholder="Inserisci una query seed (es. CafèNoir Saldi)..." 
                 className="flex-1 bg-slate-900/50 border border-white/10 rounded-lg px-4 py-2 text-white focus:ring-1 focus:ring-teal-500 focus:border-teal-500"
             />
             <button className="bg-teal-500 hover:bg-teal-600 text-slate-900 font-bold px-6 py-2 rounded-lg transition-colors w-full md:w-auto">
@@ -955,7 +973,8 @@ const AINodesView = () => {
                                     <span className="text-[10px] text-slate-500">Confidence: {branch.confidence}%</span>
                                 </div>
                             </div>
-                        ))}\n                    </div>
+                        ))}
+                    </div>
                     
                     <InsightBox title="Insight Semantico">
                         Utilizza LLM (GPT-4, Gemini, Claude) per esplorare le associazioni semantiche laterali che gli utenti fanno con il brand.
@@ -968,115 +987,6 @@ const AINodesView = () => {
     </div>
   );
 };
-
-// 6. Brand/Generic Traffic Split View (New Tab)
-const BrandGenericSplitView = () => {
-  // Mock Data derived from context
-  const trafficSplit = [
-      { name: 'Brand', value: 35000, fill: '#2dd4bf' }, // Teal
-      { name: 'Generic', value: 12000, fill: '#f472b6' }, // Pink
-  ];
-  const impressionSplit = [
-      { name: 'Brand', value: 450000, fill: '#2dd4bf' },
-      { name: 'Generic', value: 580000, fill: '#f472b6' },
-  ];
-
-  const sortedYoY = [...YOY_COMPARISON_DATA].sort((a, b) => b.delta - a.delta);
-  const winners = sortedYoY.slice(0, 6);
-  const losers = sortedYoY.slice(-6).reverse();
-
-  return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-        <DemoDataAlert />
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-                 <h2 className="text-xl md:text-2xl font-bold text-white flex items-center tracking-tight">
-                    <BarChart3 className="w-6 h-6 mr-3 text-teal-400" />
-                    Traffic & Cluster Split
-                 </h2>
-                 <p className="text-slate-400 text-sm mt-1">Executive summary: Brand vs Generic e performance Cluster.</p>
-            </div>
-            <button className="flex items-center gap-2 bg-teal-600 hover:bg-teal-500 text-white px-6 py-2 rounded-lg transition-all shadow-lg shadow-teal-500/20 w-full md:w-auto justify-center">
-                <LinkIcon className="w-4 h-4" />
-                <span className="text-xs font-bold">Connect Search Console</span>
-            </button>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card title="Traffic & Impressions Split" description="Confronto Brand vs Generic su Clicks e Impressions.">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                    <div className="h-[200px] relative">
-                         <h4 className="text-xs text-center text-slate-400 mb-2 font-bold uppercase">Clicks Split</h4>
-                         <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <Pie data={trafficSplit} innerRadius={40} outerRadius={60} paddingAngle={5} dataKey="value">
-                                    {trafficSplit.map((entry, index) => <Cell key={index} fill={entry.fill} />)}
-                                </Pie>
-                                <Tooltip content={<CustomTooltip />} />
-                                <Legend verticalAlign="bottom" height={36}/>
-                            </PieChart>
-                         </ResponsiveContainer>
-                         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -mt-4 text-center pointer-events-none">
-                            <span className="text-xs text-slate-500">Total</span>
-                            <div className="text-sm font-bold text-white">47K</div>
-                         </div>
-                    </div>
-                    <div className="h-[200px] relative">
-                         <h4 className="text-xs text-center text-slate-400 mb-2 font-bold uppercase">Impressions Split</h4>
-                         <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <Pie data={impressionSplit} innerRadius={40} outerRadius={60} paddingAngle={5} dataKey="value">
-                                    {impressionSplit.map((entry, index) => <Cell key={index} fill={entry.fill} />)}
-                                </Pie>
-                                <Tooltip content={<CustomTooltip />} />
-                                <Legend verticalAlign="bottom" height={36}/>
-                            </PieChart>
-                         </ResponsiveContainer>
-                         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -mt-4 text-center pointer-events-none">
-                            <span className="text-xs text-slate-500">Total</span>
-                            <div className="text-sm font-bold text-white">1M+</div>
-                         </div>
-                    </div>
-                </div>
-                <div className="mt-4 bg-slate-900/40 p-3 rounded-lg border border-white/5 text-xs text-slate-400 text-center">
-                    Il traffico (Click) è dominato dal <span className="text-teal-400 font-bold">Brand</span>, mentre le Impressions sono guidate dal <span className="text-pink-400 font-bold">Generic</span>.
-                </div>
-            </Card>
-
-            <Card title="Cluster Performance (YoY)" description="Cluster in forte crescita vs Cluster in perdita.">
-                <div className="grid grid-cols-2 gap-4 h-[280px]">
-                    <div className="bg-emerald-500/5 rounded-lg p-3 border border-emerald-500/10 flex flex-col">
-                         <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-3 flex items-center">
-                            <TrendingUp className="w-3 h-3 mr-1" /> Best Performers
-                         </div>
-                         <ul className="space-y-2 overflow-y-auto custom-scrollbar pr-1">
-                            {winners.map((item, i) => (
-                                <li key={i} className="flex justify-between items-center text-xs border-b border-emerald-500/10 pb-1 last:border-0">
-                                    <span className="text-slate-300 truncate mr-2">{item.cluster}</span>
-                                    <span className="font-mono font-bold text-emerald-400">+{item.delta}%</span>
-                                </li>
-                            ))}
-                         </ul>
-                    </div>
-                    <div className="bg-red-500/5 rounded-lg p-3 border border-red-500/10 flex flex-col">
-                         <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-3 flex items-center">
-                            <TrendingDown className="w-3 h-3 mr-1" /> Worst Performers
-                         </div>
-                         <ul className="space-y-2 overflow-y-auto custom-scrollbar pr-1">
-                            {losers.map((item, i) => (
-                                <li key={i} className="flex justify-between items-center text-xs border-b border-red-500/10 pb-1 last:border-0">
-                                    <span className="text-slate-300 truncate mr-2">{item.cluster}</span>
-                                    <span className="font-mono font-bold text-red-400">{item.delta}%</span>
-                                </li>
-                            ))}
-                         </ul>
-                    </div>
-                </div>
-            </Card>
-        </div>
-    </div>
-  );
-}
 
 // 5. GSC Deep Dive (Overhauled & Action Oriented with Scatter Plot)
 const GSCView = () => {
@@ -1111,12 +1021,12 @@ const GSCView = () => {
         };
     }, []);
 
-    // Mock Data for Last 3 Months Performance Delta
-    const LAST_3_MONTHS_DATA = [
-        { type: 'Brand', metric: 'Clicks', value: 12500, yoy: 12.5 },
-        { type: 'Brand', metric: 'Impressions', value: 450000, yoy: 5.2 },
-        { type: 'Generic', metric: 'Clicks', value: 3200, yoy: -8.4 },
-        { type: 'Generic', metric: 'Impressions', value: 180000, yoy: -15.1 },
+    // Mock Data for Last 3 Months Performance Delta with specific YoY for both Clicks and Impressions
+    const LAST_3_MONTHS_DETAILED = [
+        { type: 'Brand', metric: 'Clicks', current: 12500, previous: 11100, yoy: 12.5 },
+        { type: 'Brand', metric: 'Impressions', current: 450000, previous: 428000, yoy: 5.2 },
+        { type: 'Generic', metric: 'Clicks', current: 3200, previous: 3500, yoy: -8.4 },
+        { type: 'Generic', metric: 'Impressions', current: 180000, previous: 212000, yoy: -15.1 },
     ];
 
     return (
@@ -1140,26 +1050,35 @@ const GSCView = () => {
 
       {/* Brand vs Generic Split and Delta */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card title="Performance Ultimi 3 Mesi (YoY)" description="Monitora la variazione percentuale (YoY) del traffico organico, segmentando tra ricerche Brand e Generic.">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-auto md:h-[250px]">
-                    {LAST_3_MONTHS_DATA.map((item, i) => (
-                        <div key={i} className={`p-4 rounded-lg border flex flex-col justify-center ${item.type === 'Brand' ? 'bg-teal-500/5 border-teal-500/20' : 'bg-pink-500/5 border-pink-500/20'}`}>
-                            <div className="text-[10px] uppercase font-bold text-slate-400 mb-1 tracking-wider">{item.type} {item.metric}</div>
-                            <div className="text-2xl font-bold text-white mb-2">{item.value.toLocaleString()}</div>
-                            <div className={`text-sm font-mono font-bold flex items-center ${item.yoy >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+          <Card title="Year-over-Year Performance Matrix" description="Analisi dettagliata della variazione % rispetto all'anno precedente (YoY) per Brand e Generic Traffic.">
+                <div className="grid grid-cols-2 gap-4 h-auto">
+                    {LAST_3_MONTHS_DETAILED.map((item, i) => (
+                        <div key={i} className={`p-4 rounded-lg border flex flex-col justify-center relative overflow-hidden ${item.type === 'Brand' ? 'bg-teal-500/5 border-teal-500/20' : 'bg-pink-500/5 border-pink-500/20'}`}>
+                            {/* Decorative Background Icon */}
+                            <div className="absolute -right-4 -bottom-4 opacity-10">
+                                {item.yoy > 0 ? <TrendingUp className="w-24 h-24" /> : <TrendingDown className="w-24 h-24" />}
+                            </div>
+                            
+                            <div className="flex justify-between items-start z-10">
+                                <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">{item.type} {item.metric}</div>
+                                <div className={`px-2 py-0.5 rounded text-[10px] font-bold ${item.type === 'Brand' ? 'bg-teal-500/20 text-teal-400' : 'bg-pink-500/20 text-pink-400'}`}>
+                                    {item.type}
+                                </div>
+                            </div>
+                            
+                            <div className="text-2xl font-bold text-white z-10 mt-1">{item.current.toLocaleString()}</div>
+                            <div className="text-[10px] text-slate-500 mb-2 z-10">vs {item.previous.toLocaleString()} (Prev. Year)</div>
+                            
+                            <div className={`text-sm font-mono font-bold flex items-center z-10 ${item.yoy >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                                 {item.yoy >= 0 ? <TrendingUp className="w-4 h-4 mr-2"/> : <TrendingDown className="w-4 h-4 mr-2"/>}
                                 {item.yoy > 0 ? '+' : ''}{item.yoy}% YoY
                             </div>
                         </div>
                     ))}
                 </div>
-                <div className="flex justify-center gap-6 mt-4">
-                    <div className="flex items-center"><div className="w-3 h-3 bg-teal-500/20 border border-teal-500 rounded-full mr-2"></div><span className="text-xs text-slate-300">Brand Traffic</span></div>
-                    <div className="flex items-center"><div className="w-3 h-3 bg-pink-500/20 border border-pink-500 rounded-full mr-2"></div><span className="text-xs text-slate-300">Generic Traffic</span></div>
-                </div>
                 <div className="mt-4 border-t border-white/5 pt-3">
                     <p className="text-xs text-slate-400 leading-relaxed text-balance">
-                         Il calo del traffico generico (-8.4% Clicks) è un segnale d'allarme.
+                         Il grafico mostra chiaramente che mentre il Brand tiene (+12.5% Clicks), il traffico Generico sta soffrendo (-8.4% Clicks e -15.1% Impressions). <strong>Azione richiesta:</strong> Revisione contenuti Top Funnel.
                     </p>
                 </div>
           </Card>
@@ -1238,7 +1157,6 @@ const App = () => {
       case 'hero': return <HeroProductView />;
       case 'ainodes': return <AINodesView />;
       case 'gsc': return <GSCView />;
-      case 'split': return <BrandGenericSplitView />;
       default: return <BrandAnalysisView />;
     }
   };
@@ -1294,7 +1212,6 @@ const App = () => {
                     <MobileNavItem id="hero" icon={Target} label="Hero Product Deep Dive" />
                     <MobileNavItem id="ainodes" icon={BrainCircuit} label="AI Semantic Expansion" />
                     <MobileNavItem id="gsc" icon={Search} label="Organic Performance" />
-                    <MobileNavItem id="split" icon={BarChart3} label="Traffic & Cluster Split" />
                 </nav>
             </div>
         )}
@@ -1323,7 +1240,6 @@ const App = () => {
                 <NavItem id="hero" icon={Target} label="Hero Product Deep Dive" />
                 <NavItem id="ainodes" icon={BrainCircuit} label="AI Semantic Expansion" />
                 <NavItem id="gsc" icon={Search} label="Organic Performance" />
-                <NavItem id="split" icon={BarChart3} label="Traffic & Cluster Split" />
             </nav>
 
             {/* PM Section (Bottom) - RESTORED */}
@@ -1360,7 +1276,6 @@ const App = () => {
                                     activeTab === 'ainodes' ? 'AI Query Expansion' :
                                     activeTab === 'forecast' ? 'Seasonal Trends' :
                                     activeTab === 'hero' ? 'Product Strategy' :
-                                    activeTab === 'split' ? 'Traffic Split' :
                                     'Organic Search'}
                                 </span>
                             </div>
@@ -1370,12 +1285,10 @@ const App = () => {
                                 {activeTab === 'forecast' && <Clock className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
                                 {activeTab === 'hero' && <Target className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
                                 {activeTab === 'gsc' && <Search className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
-                                {activeTab === 'split' && <BarChart3 className="w-5 h-5 mr-3 text-teal-400 hidden sm:block" />}
                                 {activeTab === 'market' ? 'Analisi Cluster Brand' : 
                                 activeTab === 'ainodes' ? 'Query Fan Out' :
                                 activeTab === 'forecast' ? 'Seasonality & Trends' :
                                 activeTab === 'hero' ? 'Hero Product Study' :
-                                activeTab === 'split' ? 'Traffic & Cluster Split' :
                                 'Organic Search Performance'}
                             </h1>
                         </div>
