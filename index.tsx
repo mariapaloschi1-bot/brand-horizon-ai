@@ -16,11 +16,6 @@ import {
   Cell,
   ReferenceLine,
   LabelList,
-  Radar,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
   AreaChart,
   Area
 } from 'recharts';
@@ -85,7 +80,7 @@ const CLUSTER_DATA_UPDATED = [
   { name: 'Stivali Alti', google: 18000, tiktok: 16000, amazon: 11000, yoy: 8 },
 ];
 
-// Dati Hero Product Matrix (Radar Chart)
+// Dati Hero Product Matrix (Scorecards)
 const HERO_MATRIX_DATA = [
   { subject: 'Price Point', A: 120, B: 110, fullMark: 150 },
   { subject: 'Organic Visibility', A: 98, B: 130, fullMark: 150 },
@@ -565,29 +560,31 @@ const HeroProductView = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-7">
-                <Card title="Performance Matrix (Radar)" description="Confronto qualitativo tra il nostro Hero Product (Verde) e il Competitor Diretto (Rosa). Un'area più ampia indica una performance complessiva migliore.">
-                   <div className="h-[400px] w-full flex justify-center items-center">
-                        <ResponsiveContainer width="100%" height="100%">
-                        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={HERO_MATRIX_DATA}>
-                            <PolarGrid stroke="rgba(255,255,255,0.1)" />
-                            <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 'bold' }} />
-                            <PolarRadiusAxis angle={30} domain={[0, 150]} tick={false} axisLine={false} />
-                            <Radar name="CafèNoir" dataKey="A" stroke="#2dd4bf" strokeWidth={2} fill="#2dd4bf" fillOpacity={0.4} />
-                            <Radar name="Competitor B" dataKey="B" stroke="#f472b6" strokeWidth={2} fill="#f472b6" fillOpacity={0.2} />
-                            <Legend />
-                            <Tooltip content={<CustomTooltip />} />
-                        </RadarChart>
-                        </ResponsiveContainer>
-                   </div>
-                   <div className="grid grid-cols-2 gap-4 mt-4 text-center">
-                        <div className="bg-teal-500/10 p-2 rounded border border-teal-500/20">
-                            <div className="text-xs text-teal-300 font-bold">Punto di Forza</div>
-                            <div className="text-sm text-white">Price Competitiveness</div>
-                        </div>
-                        <div className="bg-pink-500/10 p-2 rounded border border-pink-500/20">
-                            <div className="text-xs text-pink-300 font-bold">Area Critica</div>
-                            <div className="text-sm text-white">Social Sentiment</div>
-                        </div>
+                <Card title="Performance Matrix" description="Confronto diretto su KPI chiave. Le barre verdi indicano il nostro score, il marcatore rosa è il benchmark competitor.">
+                   <div className="py-4">
+                        {HERO_MATRIX_DATA.map((item, index) => (
+                            <div key={index} className="mb-6 last:mb-0">
+                                <div className="flex justify-between text-xs mb-2">
+                                    <span className="text-slate-400 font-medium uppercase tracking-wide">{item.subject}</span>
+                                    <div className="flex gap-3">
+                                        <span className="text-teal-400 font-bold">{Math.round((item.A / item.fullMark) * 100)}% (Us)</span>
+                                        <span className="text-pink-400 font-bold">vs {Math.round((item.B / item.fullMark) * 100)}%</span>
+                                    </div>
+                                </div>
+                                <div className="w-full bg-slate-800/50 rounded-full h-2.5 overflow-hidden relative border border-white/5">
+                                    {/* Competitor Marker (Line) */}
+                                    <div 
+                                        className="absolute top-0 bottom-0 bg-pink-500 w-1 z-20 shadow-[0_0_10px_rgba(244,114,182,0.8)]" 
+                                        style={{ left: `${(item.B / item.fullMark) * 100}%` }}
+                                    ></div>
+                                    {/* Our Bar */}
+                                    <div 
+                                        className="bg-gradient-to-r from-teal-500 to-teal-400 h-full rounded-full transition-all duration-1000 relative z-10 opacity-90" 
+                                        style={{ width: `${(item.A / item.fullMark) * 100}%` }}
+                                    ></div>
+                                </div>
+                            </div>
+                        ))}
                    </div>
                 </Card>
             </div>
@@ -610,7 +607,7 @@ const HeroProductView = () => {
                     </div>
                 </Card>
                 <InsightBox title="Strategy Action">
-                   Il grafico radar mostra che, sebbene il prezzo sia competitivo, il <strong>Sentiment Social</strong> è inferiore al competitor. È necessario investire in campagne Influencer per migliorare la percezione "Trend Fit".
+                   La Scorecard mostra un gap evidente nel <strong>Social Sentiment</strong> rispetto al competitor, nonostante un Price Point competitivo. È prioritario migliorare la content strategy su TikTok.
                 </InsightBox>
             </div>
         </div>
