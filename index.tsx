@@ -11,57 +11,33 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  AreaChart,
-  Area,
-  ComposedChart,
   PieChart,
   Pie,
   Cell,
   ReferenceLine,
-  ReferenceDot,
-  ReferenceArea,
-  ScatterChart,
-  Scatter,
-  ZAxis,
   LabelList
 } from 'recharts';
 import {
   Search,
   Share2,
   ArrowRight,
-  Layers,
-  Globe,
-  Filter,
   Zap,
   Target,
   BrainCircuit,
   Clock,
   PieChart as PieChartIcon,
   Download,
-  Users,
-  Calendar,
-  Plus,
-  X,
   MapPin,
   TrendingUp,
   TrendingDown,
-  BarChart3,
-  HelpCircle,
   Lightbulb,
-  Box,
   Hexagon,
-  Eye,
-  MousePointer2,
-  Percent,
   Link as LinkIcon,
   AlertCircle,
-  Calculator,
   Activity,
   ChevronRight,
   MessageSquare,
-  Minus,
-  Check,
-  Copy
+  Check
 } from 'lucide-react';
 
 // --- Costanti Dati & Configurazioni ---
@@ -353,8 +329,7 @@ const DonutChartWithStats = ({ dataKey, platformName }: { dataKey: string, platf
     });
 
     // 1. Sort for the Pie Chart (Volume based)
-    const sortedByVolume = [...enrichedData].sort((a: any, b: any) => b[dataKey] - a[dataKey]);
-    const topCategory = sortedByVolume[0];
+    const sortedByVolume = [...enrichedData].sort((a: any, b: any) => (b[dataKey as keyof typeof b] as number) - (a[dataKey as keyof typeof a] as number));
     
     // 2. Sort for the Movers List (Trend based) - This ensures different lists for different platforms
     const sortedByTrend = [...enrichedData].sort((a, b) => b.specificYoY - a.specificYoY);
@@ -364,6 +339,7 @@ const DonutChartWithStats = ({ dataKey, platformName }: { dataKey: string, platf
     // Totale Globale (tutte le piattaforme) per il calcolo della share globale
     const grandTotalVolume = CLUSTER_DATA_UPDATED.reduce((acc, curr) => acc + curr.google + curr.tiktok + curr.amazon, 0);
     // Share on Total Brand (Global)
+    const topCategory = sortedByVolume[0];
     const platformVolume = topCategory[dataKey as keyof typeof topCategory] as number;
     const topCategoryTotalShare = (( platformVolume / grandTotalVolume) * 100).toFixed(1);
 
@@ -1161,7 +1137,13 @@ const App = () => {
     }
   };
 
-  const NavItem = ({ id, icon: Icon, label }) => (
+  interface NavItemProps {
+    id: string;
+    icon: React.ElementType;
+    label: string;
+  }
+
+  const NavItem = ({ id, icon: Icon, label }: NavItemProps) => (
     <button 
       onClick={() => setActiveTab(id)}
       className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 mb-1 ${
